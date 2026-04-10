@@ -17,8 +17,14 @@ export type VaultState = {
   withdrawOnly: boolean;
 };
 
-export function useVaultState(vaultAddress: Address = CONTRACTS.helixVault) {
-  const { data } = useReadContract({
+export type VaultStateResult = VaultState & {
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+};
+
+export function useVaultState(vaultAddress: Address = CONTRACTS.helixVault): VaultStateResult {
+  const { data, isLoading, isError, error } = useReadContract({
     address: CONTRACTS.helixLens,
     abi: HELIX_LENS_ABI,
     functionName: 'getVaultView',
@@ -41,5 +47,8 @@ export function useVaultState(vaultAddress: Address = CONTRACTS.helixVault) {
     withdrawOnly: view?.withdrawOnly ?? false,
     asset: view?.asset ?? zeroAddress,
     strategy: view?.strategy ?? zeroAddress,
-  } satisfies VaultState;
+    isLoading,
+    isError,
+    error: error ?? null,
+  } satisfies VaultStateResult;
 }

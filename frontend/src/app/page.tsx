@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useBalance } from 'wagmi';
 
@@ -16,6 +17,7 @@ function StatRow({ label, value }: { label: string; value: string }) {
 }
 
 export default function Home() {
+  const router = useRouter();
   const { address, chain, isConnected } = useAccount();
   const { data: balance, isLoading } = useBalance({
     address,
@@ -78,6 +80,12 @@ export default function Home() {
                 );
               }}
             </ConnectButton.Custom>
+          </div>
+
+          <div className="mt-4 flex justify-center">
+            <Button variant="outline" onClick={() => router.push('/vault')}>
+              Open vault
+            </Button>
           </div>
 
           {isConnected && address && (

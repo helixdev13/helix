@@ -1,7 +1,7 @@
 import type { Address } from 'viem';
 import { useAccount, useReadContracts } from 'wagmi';
 
-import { CONTRACTS } from '@/config/contracts';
+import { CONTRACTS, CITREA_CHAIN_ID } from '@/config/contracts';
 import {
   HELIX_VAULT_ABI,
   HLX_TOKEN_ABI,
@@ -17,49 +17,61 @@ export type UserRewardsState = {
   periodFinish: bigint;
 };
 
+export type UserRewardsResult = UserRewardsState & {
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+};
+
 export function useUserRewards(
   vaultAddress: Address = CONTRACTS.helixVault,
   distributorAddress: Address = CONTRACTS.rewardDistributor,
   userAddress?: Address,
-): UserRewardsState {
+): UserRewardsResult {
   const { address: connectedAddress } = useAccount();
   const account = userAddress ?? connectedAddress;
   const enabled = Boolean(account);
 
-  const { data } = useReadContracts({
+  const { data, isLoading, isError, error } = useReadContracts({
     allowFailure: false,
     contracts: enabled
       ? [
           {
+            chainId: CITREA_CHAIN_ID,
             address: distributorAddress,
             abi: REWARD_DISTRIBUTOR_ABI,
             functionName: 'balanceOf',
             args: [account as Address],
           },
           {
+            chainId: CITREA_CHAIN_ID,
             address: distributorAddress,
             abi: REWARD_DISTRIBUTOR_ABI,
             functionName: 'earned',
             args: [account as Address],
           },
           {
+            chainId: CITREA_CHAIN_ID,
             address: CONTRACTS.hlxToken,
             abi: HLX_TOKEN_ABI,
             functionName: 'balanceOf',
             args: [account as Address],
           },
           {
+            chainId: CITREA_CHAIN_ID,
             address: vaultAddress,
             abi: HELIX_VAULT_ABI,
             functionName: 'allowance',
             args: [account as Address, distributorAddress],
           },
           {
+            chainId: CITREA_CHAIN_ID,
             address: distributorAddress,
             abi: REWARD_DISTRIBUTOR_ABI,
             functionName: 'rewardRate',
           },
           {
+            chainId: CITREA_CHAIN_ID,
             address: distributorAddress,
             abi: REWARD_DISTRIBUTOR_ABI,
             functionName: 'periodFinish',
@@ -88,5 +100,8 @@ export function useUserRewards(
     stakeAllowance,
     rewardRate,
     periodFinish,
-  } as UserRewardsState;
+    isLoading: enabled ? isLoading : false,
+    isError,
+    error: error ?? null,
+  };
 }

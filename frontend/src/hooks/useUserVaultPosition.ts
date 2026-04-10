@@ -11,31 +11,40 @@ export type VaultPosition = {
   usdceAllowance: bigint;
 };
 
+export type VaultPositionResult = VaultPosition & {
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+};
+
 export function useUserVaultPosition(
   vaultAddress: Address = CONTRACTS.helixVault,
   userAddress?: Address,
-): VaultPosition {
+): VaultPositionResult {
   const { address: connectedAddress } = useAccount();
   const account = userAddress ?? connectedAddress;
   const enabled = Boolean(account);
 
-  const { data } = useReadContracts({
+  const { data, isLoading, isError, error } = useReadContracts({
     allowFailure: false,
     contracts: enabled
       ? [
           {
+            chainId: CITREA_CHAIN_ID,
             address: vaultAddress,
             abi: HELIX_VAULT_ABI,
             functionName: 'balanceOf',
             args: [account as Address],
           },
           {
+            chainId: CITREA_CHAIN_ID,
             address: TOKENS.usdce,
             abi: HLX_TOKEN_ABI,
             functionName: 'balanceOf',
             args: [account as Address],
           },
           {
+            chainId: CITREA_CHAIN_ID,
             address: TOKENS.usdce,
             abi: HLX_TOKEN_ABI,
             functionName: 'allowance',
@@ -68,5 +77,8 @@ export function useUserVaultPosition(
     sharesInUsdce,
     usdceBalance,
     usdceAllowance,
-  } satisfies VaultPosition;
+    isLoading: enabled ? isLoading : false,
+    isError,
+    error: error ?? null,
+  } satisfies VaultPositionResult;
 }

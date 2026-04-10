@@ -21,6 +21,12 @@ export type StrategyState = {
   rebalancePaused: boolean;
 };
 
+export type StrategyStateResult = StrategyState & {
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+};
+
 function useUnixTime(): bigint {
   const [now, setNow] = useState(() => BigInt(Math.floor(Date.now() / 1000)));
 
@@ -35,10 +41,10 @@ function useUnixTime(): bigint {
   return now;
 }
 
-export function useStrategyState(vaultAddress: Address = CONTRACTS.helixVault): StrategyState {
+export function useStrategyState(vaultAddress: Address = CONTRACTS.helixVault): StrategyStateResult {
   const now = useUnixTime();
 
-  const { data } = useReadContract({
+  const { data, isLoading, isError, error } = useReadContract({
     address: CONTRACTS.helixLens,
     abi: HELIX_LENS_ABI,
     functionName: 'getCompoundStrategyView',
@@ -66,5 +72,8 @@ export function useStrategyState(vaultAddress: Address = CONTRACTS.helixVault): 
     hlxToken: view?.hlxToken ?? zeroAddress,
     rewardDistributor: view?.rewardDistributor ?? zeroAddress,
     rebalancePaused: view?.rebalancePaused ?? false,
-  } satisfies StrategyState;
+    isLoading,
+    isError,
+    error: error ?? null,
+  } satisfies StrategyStateResult;
 }
