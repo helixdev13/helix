@@ -5,23 +5,42 @@ import { HelixVault } from "../HelixVault.sol";
 import { IRiskEngine } from "../interfaces/IRiskEngine.sol";
 import { Types } from "../libraries/Types.sol";
 
+/// @notice Minimal view surface for an auto-compound strategy.
 interface IAutoCompoundClStrategy {
+    /// @notice Return the adapter address.
+    /// @return Address of the CL adapter.
     function adapter() external view returns (address);
 
+    /// @notice Return the compounder configuration.
+    /// @return Configured compound parameters.
     function compoundConfig() external view returns (Types.CompoundConfig memory);
 
+    /// @notice Return idle assets held directly by the strategy.
+    /// @return Idle asset balance.
     function totalIdle() external view returns (uint256);
 
+    /// @notice Return gross deployed assets reported by the adapter.
+    /// @return Deployed asset balance.
     function totalDeployedAssets() external view returns (uint256);
 
+    /// @notice Return total assets tracked by the strategy.
+    /// @return Total strategy assets.
     function totalAssets() external view returns (uint256);
 
+    /// @notice Return the current rebalance pause flag.
+    /// @return `true` when rebalances are paused.
     function rebalancePaused() external view returns (bool);
 
+    /// @notice Return the timestamp of the last compound.
+    /// @return Timestamp of the last successful compound.
     function lastCompoundTimestamp() external view returns (uint256);
 }
 
+/// @notice Read-only lens for Helix vault and auto-compound strategy state.
+/// @dev Intended for operator dashboards and off-chain verification.
 contract HelixLens {
+    /// @notice Vault state snapshot used by operators and dashboards.
+    /// @dev Values are read directly from the vault and risk engine.
     struct VaultView {
         address vault;
         address asset;
@@ -37,6 +56,8 @@ contract HelixLens {
         bool withdrawOnly;
     }
 
+    /// @notice Auto-compound strategy state snapshot.
+    /// @dev Combines compound configuration, adapter state, and accounting totals.
     struct CompoundStrategyView {
         address vault;
         address strategy;
@@ -57,6 +78,9 @@ contract HelixLens {
         bool rebalancePaused;
     }
 
+    /// @notice Return the current vault and risk-engine view for a Helix vault.
+    /// @param vault Helix vault to inspect.
+    /// @return view_ Read-only vault snapshot.
     function getVaultView(
         HelixVault vault
     ) external view returns (VaultView memory view_) {
@@ -78,6 +102,9 @@ contract HelixLens {
         });
     }
 
+    /// @notice Return the auto-compound strategy view for a Helix vault.
+    /// @param vault Helix vault to inspect.
+    /// @return view_ Read-only compound strategy snapshot.
     function getCompoundStrategyView(
         HelixVault vault
     ) external view returns (CompoundStrategyView memory view_) {

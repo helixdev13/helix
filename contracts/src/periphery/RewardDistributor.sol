@@ -10,6 +10,8 @@ import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.s
 import { Errors } from "../libraries/Errors.sol";
 import { Events } from "../libraries/Events.sol";
 
+/// @notice Rewards vault stakers with HLX emissions.
+/// @dev Uses a standard update-on-interaction accounting model with two-step ownership.
 contract RewardDistributor is Ownable2Step, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
@@ -29,6 +31,10 @@ contract RewardDistributor is Ownable2Step, ReentrancyGuard {
     uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
 
+    /// @notice Deploy the reward distributor for a vault and HLX reward token.
+    /// @param stakingToken_ Vault share token staked by users.
+    /// @param rewardToken_ HLX token distributed as rewards.
+    /// @param initialOwner Initial owner of the distributor.
     constructor(
         address stakingToken_,
         address rewardToken_,
@@ -42,16 +48,23 @@ contract RewardDistributor is Ownable2Step, ReentrancyGuard {
         REWARD_TOKEN = IERC20(rewardToken_);
     }
 
+    /// @notice Return the total amount of staking tokens currently deposited.
+    /// @return Total staked vault shares.
     function totalSupply() external view returns (uint256) {
         return _totalSupply;
     }
 
+    /// @notice Return the staking balance for an account.
+    /// @param account Account to query.
+    /// @return Balance of staked vault shares.
     function balanceOf(
         address account
     ) external view returns (uint256) {
         return _balances[account];
     }
 
+    /// @notice Return the current reward-per-token accumulator.
+    /// @return Reward-per-token scaled to `1e18`.
     function rewardPerToken() public view returns (uint256) {
         if (_totalSupply == 0) {
             return rewardPerTokenStored;
@@ -62,6 +75,9 @@ contract RewardDistributor is Ownable2Step, ReentrancyGuard {
         );
     }
 
+    /// @notice Return accrued rewards for an account.
+    /// @param account Account to query.
+    /// @return Pending HLX rewards for `account`.
     function earned(
         address account
     ) public view returns (uint256) {
@@ -70,14 +86,20 @@ contract RewardDistributor is Ownable2Step, ReentrancyGuard {
         ) + rewards[account];
     }
 
+    /// @notice Return the last timestamp rewards are applicable.
+    /// @return Timestamp capped at `periodFinish`.
     function lastTimeRewardApplicable() public view returns (uint256) {
         return block.timestamp < periodFinish ? block.timestamp : periodFinish;
     }
 
+    /// @notice Return the total reward scheduled for one distribution period.
+    /// @return Reward amount for the current duration.
     function getRewardForDuration() external view returns (uint256) {
         return rewardRate * rewardsDuration;
     }
 
+    /// @notice Stake vault shares to start earning HLX.
+    /// @param amount Amount of vault shares to stake.
     function stake(
         uint256 amount
     ) external nonReentrant updateReward(msg.sender) {
@@ -90,6 +112,8 @@ contract RewardDistributor is Ownable2Step, ReentrancyGuard {
         STAKING_TOKEN.safeTransferFrom(msg.sender, address(this), amount);
     }
 
+    /// @notice Withdraw staked vault shares without claiming rewards.
+    /// @param amount Amount of vault shares to withdraw.
     function withdraw(
         uint256 amount
     ) external nonReentrant updateReward(msg.sender) {
@@ -102,6 +126,7 @@ contract RewardDistributor is Ownable2Step, ReentrancyGuard {
         STAKING_TOKEN.safeTransfer(msg.sender, amount);
     }
 
+    /// @notice Claim the HLX rewards accumulated for the caller.
     function claimRewards() external nonReentrant updateReward(msg.sender) {
         uint256 reward = rewards[msg.sender];
         if (reward != 0) {
@@ -111,6 +136,7 @@ contract RewardDistributor is Ownable2Step, ReentrancyGuard {
         }
     }
 
+    /// @notice Withdraw all stake and claim all rewards for the caller.
     function exit() external nonReentrant updateReward(msg.sender) {
         uint256 amount = _balances[msg.sender];
         if (amount != 0) {
@@ -127,6 +153,8 @@ contract RewardDistributor is Ownable2Step, ReentrancyGuard {
         }
     }
 
+    /// @notice Load new HLX rewards for the next distribution period.
+    /// @param reward Amount of HLX to distribute.
     function notifyRewardAmount(
         uint256 reward
     ) external onlyOwner updateReward(address(0)) {
@@ -151,6 +179,8 @@ contract RewardDistributor is Ownable2Step, ReentrancyGuard {
         emit Events.RewardDistributed(address(this), reward);
     }
 
+    /// @notice Update the reward distribution duration.
+    /// @param newDuration New distribution window in seconds.
     function setRewardsDuration(
         uint256 newDuration
     ) external onlyOwner {

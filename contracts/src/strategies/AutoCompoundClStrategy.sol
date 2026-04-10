@@ -15,6 +15,8 @@ import { Errors } from "../libraries/Errors.sol";
 import { Events } from "../libraries/Events.sol";
 import { Types } from "../libraries/Types.sol";
 
+/// @notice Auto-compound CL strategy for the Citrea JuiceSwap stack.
+/// @dev Manages vault deposits, CL rebalances, harvests, compounding, and fee routing.
 contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
     using SafeERC20 for IERC20;
 
@@ -41,6 +43,17 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
     HLXToken public hlxToken;
     address public rewardDistributor;
 
+    /// @notice Create an auto-compound strategy bound to the vault, adapter, and reward stack.
+    /// @param asset_ Base asset managed by the strategy.
+    /// @param vault_ Vault that owns the strategy lifecycle.
+    /// @param adapter_ CL adapter used for rebalances and harvests.
+    /// @param oracleRouter_ Oracle router used for freshness checks.
+    /// @param initialOwner Initial owner of the strategy.
+    /// @param strategist_ Address allowed to rebalance alongside the owner.
+    /// @param guardian_ Address allowed to pause rebalances.
+    /// @param feeRecipient_ Address that receives the treasury asset fee.
+    /// @param hlxToken_ HLX reward token contract.
+    /// @param rewardDistributor_ Reward distributor that receives user HLX.
     constructor(
         IERC20 asset_,
         address vault_,
@@ -102,46 +115,68 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         }
     }
 
+    /// @notice Return the managed base asset.
+    /// @return Address of the asset token.
     function asset() external view returns (address) {
         return address(ASSET_TOKEN);
     }
 
+    /// @notice Return the owning vault.
+    /// @return Address of the vault.
     function vault() external view returns (address) {
         return VAULT;
     }
 
+    /// @notice Return the CL adapter bound to the strategy.
+    /// @return Address of the adapter.
     function adapter() external view returns (address) {
         return address(ADAPTER);
     }
 
+    /// @notice Return the oracle router used by the strategy.
+    /// @return Address of the oracle router.
     function oracleRouter() external view returns (address) {
         return address(ORACLE_ROUTER);
     }
 
+    /// @notice Return the idle asset balance held by the strategy.
+    /// @return Idle asset balance.
     function totalIdle() public view returns (uint256) {
         return ASSET_TOKEN.balanceOf(address(this));
     }
 
+    /// @notice Return gross deployed assets reported by the adapter.
+    /// @return Gross deployed asset balance.
     function totalDeployedAssets() public view returns (uint256) {
         return ADAPTER.valuation().grossAssets;
     }
 
+    /// @notice Return conservative total assets for the strategy.
+    /// @return Idle assets plus adapter net assets.
     function totalConservativeAssets() public view returns (uint256) {
         return totalIdle() + ADAPTER.valuation().netAssets;
     }
 
+    /// @notice Return gross total assets for the strategy.
+    /// @return Idle assets plus gross deployed assets.
     function totalAssets() public view returns (uint256) {
         return totalIdle() + totalDeployedAssets();
     }
 
+    /// @notice Return the adapter position state.
+    /// @return Current adapter position metadata.
     function positionState() external view returns (Types.PositionState memory) {
         return ADAPTER.positionState();
     }
 
+    /// @notice Return the adapter valuation snapshot.
+    /// @return Current adapter valuation data.
     function adapterValuation() public view returns (Types.Valuation memory) {
         return ADAPTER.valuation();
     }
 
+    /// @notice Return the current compound configuration.
+    /// @return compoundConfig Current fee, mint, and reward routing parameters.
     function compoundConfig() external view returns (Types.CompoundConfig memory) {
         return Types.CompoundConfig({
             performanceFeeBps: performanceFeeBps,
@@ -156,6 +191,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         });
     }
 
+    /// @notice Receive vault assets for later deployment or compounding.
+    /// @param assets Amount of asset tokens to pull from the vault.
     function deposit(
         uint256 assets
     ) external onlyVault nonReentrant {
@@ -166,6 +203,9 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         ASSET_TOKEN.safeTransferFrom(msg.sender, address(this), assets);
     }
 
+    /// @notice Return asset tokens to the vault on withdrawal.
+    /// @param assets Amount of asset tokens to return.
+    /// @param receiver Recipient of the withdrawn assets.
     function withdraw(
         uint256 assets,
         address receiver
@@ -181,10 +221,12 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         ASSET_TOKEN.safeTransfer(receiver, assets);
     }
 
+    /// @notice Harvest pending adapter fees into idle assets.
     function harvest() external onlyVault nonReentrant {
         ADAPTER.harvestTo(address(this));
     }
 
+    /// @notice Unwind the full adapter position back to the vault.
     function unwindAll() external onlyVault nonReentrant {
         ADAPTER.unwindAllTo(address(this));
 
@@ -194,6 +236,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         }
     }
 
+    /// @notice Harvest, fee, mint, and optionally reinvest accumulated profit.
+    /// @return report Compound accounting and mint distribution summary.
     function compound() external nonReentrant returns (Types.CompoundReport memory report) {
         if (block.timestamp < lastCompoundTimestamp + compoundCooldown) {
             revert Errors.CompoundCooldownActive(
@@ -254,6 +298,9 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         );
     }
 
+    /// @notice Preview the adapter rebalance for a given intent.
+    /// @param intent Desired rebalance intent.
+    /// @return quote Quote returned by the adapter for the intent.
     function previewRebalance(
         Types.RebalanceIntent calldata intent
     ) external view returns (Types.RebalanceQuote memory quote) {
@@ -261,6 +308,10 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         quote = ADAPTER.quoteRebalance(intent);
     }
 
+    /// @notice Execute a rebalance through the adapter.
+    /// @param intent Desired rebalance intent.
+    /// @param quote Quote previously returned by the adapter.
+    /// @param limits Execution limits for slippage and loss.
     function rebalance(
         Types.RebalanceIntent calldata intent,
         Types.RebalanceQuote calldata quote,
@@ -300,6 +351,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         );
     }
 
+    /// @notice Update the strategist address.
+    /// @param newStrategist New strategist address.
     function setStrategist(
         address newStrategist
     ) external onlyOwner {
@@ -307,6 +360,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         emit Events.StrategyStrategistUpdated(newStrategist);
     }
 
+    /// @notice Update the guardian address.
+    /// @param newGuardian New guardian address.
     function setGuardian(
         address newGuardian
     ) external onlyOwner {
@@ -314,6 +369,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         emit Events.StrategyGuardianUpdated(newGuardian);
     }
 
+    /// @notice Pause or resume strategy rebalances.
+    /// @param enabled New rebalance pause state.
     function setRebalancePaused(
         bool enabled
     ) external {
@@ -328,6 +385,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         emit Events.RebalancePauseUpdated(msg.sender, enabled);
     }
 
+    /// @notice Update the performance fee charged on compound profit.
+    /// @param newBps New performance fee in basis points.
     function setPerformanceFeeBps(
         uint16 newBps
     ) external onlyOwner {
@@ -339,6 +398,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         emit Events.PerformanceFeeUpdated(msg.sender, previousBps, newBps);
     }
 
+    /// @notice Update the share of performance fees routed to HLX rewards.
+    /// @param newBps New reward ratio in basis points.
     function setRewardRatioBps(
         uint16 newBps
     ) external onlyOwner {
@@ -350,6 +411,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         emit Events.RewardRatioUpdated(msg.sender, previousBps, newBps);
     }
 
+    /// @notice Update the bounty share of HLX rewards.
+    /// @param newBps New bounty ratio in basis points.
     function setBountyBps(
         uint16 newBps
     ) external onlyOwner {
@@ -359,6 +422,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         bountyBps = newBps;
     }
 
+    /// @notice Update the HLX mint conversion rate.
+    /// @param newRate New mint rate scaled to `1e18`.
     function setHlxMintRate(
         uint256 newRate
     ) external onlyOwner {
@@ -370,12 +435,16 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         emit Events.HlxMintRateUpdated(msg.sender, previousRate, newRate);
     }
 
+    /// @notice Update the minimum profit required to compound.
+    /// @param newThreshold New minimum profit threshold in asset units.
     function setMinimumProfitThreshold(
         uint256 newThreshold
     ) external onlyOwner {
         minimumProfitThreshold = newThreshold;
     }
 
+    /// @notice Update the cooldown between compound calls.
+    /// @param newCooldown New cooldown in seconds.
     function setCompoundCooldown(
         uint256 newCooldown
     ) external onlyOwner {
@@ -384,6 +453,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         emit Events.CompoundCooldownUpdated(msg.sender, previous, newCooldown);
     }
 
+    /// @notice Update the recipient of treasury asset fees.
+    /// @param newFeeRecipient New fee recipient address.
     function setFeeRecipient(
         address newFeeRecipient
     ) external onlyOwner {
@@ -393,6 +464,8 @@ contract AutoCompoundClStrategy is Ownable2Step, ReentrancyGuard, IStrategy {
         feeRecipient = newFeeRecipient;
     }
 
+    /// @notice Update the HLX reward distributor address.
+    /// @param newDistributor New reward distributor address.
     function setRewardDistributor(
         address newDistributor
     ) external onlyOwner {
