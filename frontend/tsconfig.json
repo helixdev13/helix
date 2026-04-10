@@ -21,7 +21,16 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@/abi/*.json": [
+        "src/abi/*.json.ts"
+      ]
+    }
   },
   "include": [
     "next-env.d.ts",
