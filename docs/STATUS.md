@@ -5,10 +5,11 @@
 Helix is in:
 
 - frozen live deployment maintenance
+- deployed auto-compound stack maintenance
 - v2 allocator-foundation development
 - venue-agnostic flagship build planning
 
-The current live Citrea deployment exists already, but productive allocation is still disabled.
+The frozen live Citrea deployment exists already, and the deployed auto-compound stack is now live but disabled by default.
 
 ## Frozen Live State
 
@@ -44,6 +45,7 @@ Helix v2 is now defined as:
 
 - a Citrea-native yield optimizer / aggregator
 - flagship first product: `HLX-USDC.e Smart Vault`
+- deployed flagship CL lane: auto-compound `USDC.e / wcBTC`
 - strategy family in progress: generic allocator lane
 - first non-CL venue work: blocked until venue approval clears
 
@@ -52,14 +54,16 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 ## Current Build Status
 
 - allocator foundation exists in code
-- auto-compound Citrea deployment scaffold exists in code
-- auto-compound ownership handoff scripts exist in code
+- auto-compound Citrea deployment has been executed onchain
+- auto-compound ownership handoff has been completed
 - venue-specific non-CL adapter work has not started
-- the frozen live `JuiceSwap` path remains the only deployed lane
+- the frozen live `JuiceSwap` path remains untouched
+- the deployed auto-compound stack is the current product-facing deployed lane
 
 ## Immediate Next Engineering Focus
 
 - harden and extend the generic allocator foundation
+- keep the deployed auto-compound stack disabled by default until any deliberate enablement review
 - preserve venue-agnostic strategy and adapter boundaries
 - do not start a real `Zentra` or other venue adapter until diligence clears
 - do not modify the frozen live deployment path as part of v2 work

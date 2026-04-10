@@ -2,7 +2,12 @@
 
 ## Summary
 
-This note records the current deployed Helix Citrea stack for the frozen `USDC.e / wcBTC` JuiceSwap candidate.
+This note records the current deployed Helix Citrea stacks:
+
+- the frozen `USDC.e / wcBTC` JuiceSwap candidate
+- the deployed `HLX-USDC.e` auto-compound stack
+
+Both stacks are currently disabled by default.
 
 Current status:
 
@@ -10,9 +15,11 @@ Current status:
 - ownership accepted
 - disabled by default
 
-Productive enablement is not active and remains blocked until the documented same-day liquidity signoff passes.
+Productive enablement is not active on the frozen live candidate and remains blocked until the documented same-day liquidity signoff passes.
 
 ## Deployed Contracts
+
+### Frozen JuiceSwap live candidate
 
 - `RiskEngine`: `0xf211C2eFbeFe0e9c26bDDfA8F65c42E1481A1025`
 - `OracleRouter`: `0xA666f5806a4fCC563a185372DA6c5b19FAEeA7Ea`
@@ -23,6 +30,20 @@ Productive enablement is not active and remains blocked until the documented sam
 - `JuiceSwapClAdapter`: `0x9fE0460523b13730EAa5466F4C3ff184276e45aF`
 - `ManagedClStrategy`: `0x98c888b9ABC686cb9219013f6AF89E245667B38E`
 
+### Deployed auto-compound stack
+
+- `RiskEngine`: `0xCDA74676b8c53914c71085414191C0252f741B18`
+- `OracleRouter`: `0x49B8317E44384D13CdC662D91d14Df4254bE5afD`
+- `VaultFactory`: `0x945099d64ecfE1aDe18698C35Fb3f607D19134c6`
+- `HelixLens`: `0x51239c936c9D5F4A461e30e955e09943515f2F0C`
+- `USDC/USD oracle adapter`: `0x6cfbA7ef44b71B34dB12AeFa7b2A7811C08BB0Ae`
+- `BTC/USD oracle adapter`: `0x305E6441EF1F891ec90B8E84056328caA264932e`
+- `HLXToken`: `0x1E39f6D1a98b8EE7296aa236106baa2126216805`
+- `HelixVault`: `0xeDc8aE17318fEdFEf6a10041078Dc3e6816d8607`
+- `JuiceSwapClAdapter`: `0xa02682e3dCCa9FA779767dA14332a093D6e3dfFc`
+- `AutoCompoundClStrategy`: `0x4303b4F7Cd37582551bDF6Cfb596b314B8081E97`
+- `RewardDistributor`: `0xB459B3FCD9969dA4A8d6d0F223C115a6b1d8bEB1`
+
 ## Role Addresses
 
 - `FINAL_OWNER`: `0x7C3244f1071Fb9849521f4B15dcFd20433F13f35`
@@ -32,7 +53,7 @@ Productive enablement is not active and remains blocked until the documented sam
 
 ## Ownership State
 
-Ownership has been accepted by `FINAL_OWNER` on all five governed contracts:
+Ownership has been accepted by `FINAL_OWNER` on all five governed contracts in the frozen JuiceSwap live candidate:
 
 - `VaultFactory`
 - `RiskEngine`
@@ -40,18 +61,36 @@ Ownership has been accepted by `FINAL_OWNER` on all five governed contracts:
 - `HelixVault`
 - `ManagedClStrategy`
 
+Ownership has also been accepted by `FINAL_OWNER` on all six governed contracts in the deployed auto-compound stack:
+
+- `VaultFactory`
+- `RiskEngine`
+- `OracleRouter`
+- `HelixVault`
+- `AutoCompoundClStrategy`
+- `RewardDistributor`
+
 Current pending-owner state:
 
 - no contract has a non-zero `pendingOwner`
 
 ## Safety State
 
+Frozen JuiceSwap live candidate:
+
 - strategy attached: `true`
 - `maxAllocationBps = 0`
 - `paused = false`
 - `withdrawOnly = false`
 
-This means the stack is deployed and wired, but remains non-productive.
+Deployed auto-compound stack:
+
+- strategy attached: `true`
+- `maxAllocationBps = 0`
+- `paused = false`
+- `withdrawOnly = false`
+
+Both stacks are deployed and wired, but remain non-productive.
 
 ## Live Candidate Context
 

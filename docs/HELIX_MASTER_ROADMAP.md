@@ -80,9 +80,10 @@ That flagship should be:
 - Phase 3 deterministic mock multi-adapter routing has started and is test-backed
 - final generic allocator hardening review is clean; venue-approval recheck has now returned no-build
 - April 10, 2026 narrow fallback screen is complete: no non-CL venue beyond blocked Zentra clears a build-now decision
-- v2 auto-compound deployment scaffold now exists separately from the frozen JuiceSwap config
+- v2 auto-compound deployment has been executed onchain and ownership acceptance is complete
 - `HelixLens` has a product-facing allocator read surface for the current stack
-- auto-compound ownership handoff scripts now exist; post-deploy verification is still pending
+- auto-compound deployment, transfer, and acceptance scripts now exist
+- post-deploy read-only verification is complete
 - venue-specific non-CL adapter work has not started
 - current first venue target remains `Zentra`
 - current venue decision state remains `no-build-yet`
@@ -253,8 +254,9 @@ Do not reorder this.
 
 The immediate engineering mission is:
 
-- harden the auto-compound smart-vault deployment surface
-- keep the new Citrea deployment path disabled by default until the same-day checks pass
+- keep both deployed Citrea stacks disabled by default unless a deliberate enablement review is requested
+- keep the frozen `JuiceSwap` deployment untouched
+- continue expanding the generic allocator-based smart-vault lane
 - keep any next implementation venue-agnostic unless a venue later clears the documented approval gates
 - preserve the already-hardened strategy/adapter boundary
 - keep the frozen Citrea `JuiceSwap` deployment untouched
