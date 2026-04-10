@@ -2,6 +2,7 @@
 pragma solidity ^0.8.26;
 
 import { HelixVault } from "../HelixVault.sol";
+import { AllocatorTypes } from "../libraries/AllocatorTypes.sol";
 import { IRiskEngine } from "../interfaces/IRiskEngine.sol";
 import { Types } from "../libraries/Types.sol";
 
@@ -19,6 +20,20 @@ interface IAutoCompoundClStrategy {
     function rebalancePaused() external view returns (bool);
 
     function lastCompoundTimestamp() external view returns (uint256);
+}
+
+interface IManagedAllocatorStrategy {
+    function asset() external view returns (address);
+
+    function vault() external view returns (address);
+
+    function oracleRouter() external view returns (address);
+
+    function strategist() external view returns (address);
+
+    function guardian() external view returns (address);
+
+    function allocatorState() external view returns (AllocatorTypes.AllocatorState memory);
 }
 
 contract HelixLens {
@@ -55,6 +70,27 @@ contract HelixLens {
         uint256 totalDeployedAssets;
         uint256 totalAssets;
         bool rebalancePaused;
+    }
+
+    struct AllocatorStrategyView {
+        address vault;
+        address strategy;
+        address asset;
+        address oracleRouter;
+        address strategist;
+        address guardian;
+        AllocatorTypes.HealthState healthState;
+        bool allocationPaused;
+        uint16 idleFloorBps;
+        uint16 globalAllocationCapBps;
+        uint256 totalIdleAssets;
+        uint256 totalDeployedAssets;
+        uint256 totalWithdrawableAssets;
+        uint256 totalPendingRewards;
+        uint256 totalLiveAssets;
+        uint256 totalConservativeAssets;
+        uint256 adapterCount;
+        uint256 activeAdapterCount;
     }
 
     function getVaultView(
@@ -107,6 +143,39 @@ contract HelixLens {
             totalDeployedAssets: compoundStrategy.totalDeployedAssets(),
             totalAssets: compoundStrategy.totalAssets(),
             rebalancePaused: compoundStrategy.rebalancePaused()
+        });
+    }
+
+    function getAllocatorStrategyView(
+        HelixVault vault
+    ) external view returns (AllocatorStrategyView memory view_) {
+        address strategy = address(vault.strategy());
+        if (strategy == address(0)) {
+            return view_;
+        }
+
+        IManagedAllocatorStrategy allocatorStrategy = IManagedAllocatorStrategy(strategy);
+        AllocatorTypes.AllocatorState memory state = allocatorStrategy.allocatorState();
+
+        view_ = AllocatorStrategyView({
+            vault: address(vault),
+            strategy: strategy,
+            asset: allocatorStrategy.asset(),
+            oracleRouter: allocatorStrategy.oracleRouter(),
+            strategist: allocatorStrategy.strategist(),
+            guardian: allocatorStrategy.guardian(),
+            healthState: state.healthState,
+            allocationPaused: state.allocationPaused,
+            idleFloorBps: state.idleFloorBps,
+            globalAllocationCapBps: state.globalAllocationCapBps,
+            totalIdleAssets: state.totalIdleAssets,
+            totalDeployedAssets: state.totalDeployedAssets,
+            totalWithdrawableAssets: state.totalWithdrawableAssets,
+            totalPendingRewards: state.totalPendingRewards,
+            totalLiveAssets: state.totalLiveAssets,
+            totalConservativeAssets: state.totalConservativeAssets,
+            adapterCount: state.adapterCount,
+            activeAdapterCount: state.activeAdapterCount
         });
     }
 }
