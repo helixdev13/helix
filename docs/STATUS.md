@@ -56,6 +56,7 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 - allocator foundation implemented and test-backed
 - auto-compound Citrea deployment has been executed onchain
 - auto-compound ownership handoff has been completed
+- USDC.e base-vault ownership handoff scripts have been added
 - venue-specific non-CL adapter work has not started
 - the frozen live `JuiceSwap` path remains untouched
 - the deployed auto-compound stack is the current product-facing deployed lane
@@ -84,6 +85,9 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 - [MockAllocatorAdapter.sol](../contracts/src/adapters/MockAllocatorAdapter.sol)
 - [ManagedAllocatorStrategy.t.sol](../contracts/test/ManagedAllocatorStrategy.t.sol)
 - [DeployCitreaAutoCompoundVault.s.sol](../contracts/script/DeployCitreaAutoCompoundVault.s.sol)
+- [DeployCitreaUsdcBase.s.sol](../contracts/script/DeployCitreaUsdcBase.s.sol)
+- [TransferCitreaUsdcBaseOwnership.s.sol](../contracts/script/TransferCitreaUsdcBaseOwnership.s.sol)
+- [AcceptCitreaUsdcBaseOwnership.s.sol](../contracts/script/AcceptCitreaUsdcBaseOwnership.s.sol)
 - [HelixLens.sol](../contracts/src/periphery/HelixLens.sol)
 - [AutoCompoundClStrategy.sol](../contracts/src/strategies/AutoCompoundClStrategy.sol)
 - [RewardDistributor.sol](../contracts/src/periphery/RewardDistributor.sol)
