@@ -195,6 +195,93 @@ contract ManagedAllocatorStrategyTest is Test {
         strategy.allocateToAdapter(address(healthyAdapter), 20e18);
     }
 
+    function testDisabledAdapterBlocksAllocationAndCanBeReenabled() public {
+        _seedStrategy(100e18);
+
+        strategy.setAdapterEnabled(address(healthyAdapter), false);
+
+        vm.prank(STRATEGIST);
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.AdapterDisabled.selector, address(healthyAdapter))
+        );
+        strategy.allocateToAdapter(address(healthyAdapter), 20e18);
+
+        strategy.setAdapterEnabled(address(healthyAdapter), true);
+
+        vm.prank(STRATEGIST);
+        strategy.allocateToAdapter(address(healthyAdapter), 20e18);
+
+        assertEq(strategy.totalIdle(), 80e18);
+        assertEq(asset.balanceOf(address(healthyAdapter)), 20e18);
+    }
+
+    function testIdleFloorBlocksAllocation() public {
+        _seedStrategy(100e18);
+
+        strategy.setIdleFloorBps(8_000);
+
+        vm.prank(STRATEGIST);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.IdleFloorViolation.selector,
+                70e18,
+                80e18
+            )
+        );
+        strategy.allocateToAdapter(address(healthyAdapter), 30e18);
+    }
+
+    function testCapAndValuationFollowLiveAssetsAfterGainAndHaircut() public {
+        _seedStrategy(100e18);
+
+        strategy.setGlobalAllocationCapBps(6_000);
+
+        vm.prank(STRATEGIST);
+        strategy.allocateToAdapter(address(healthyAdapter), 60e18);
+
+        vm.prank(STRATEGIST);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.AllocationCapExceeded.selector,
+                70e18,
+                60e18
+            )
+        );
+        strategy.allocateToAdapter(address(secondaryAdapter), 10e18);
+
+        asset.mint(address(healthyAdapter), 20e18);
+        vm.prank(address(strategy));
+        healthyAdapter.setValuationHaircutBps(500);
+
+        vm.prank(STRATEGIST);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.AllocationCapExceeded.selector,
+                90e18,
+                72e18
+            )
+        );
+        strategy.allocateToAdapter(address(secondaryAdapter), 10e18);
+
+        vm.prank(VAULT);
+        strategy.harvest();
+
+        vm.prank(STRATEGIST);
+        strategy.allocateToAdapter(address(secondaryAdapter), 10e18);
+
+        AllocatorTypes.AllocatorState memory state = strategy.allocatorState();
+        AllocatorTypes.AdapterState memory healthyState = strategy.adapterState(address(healthyAdapter));
+
+        assertEq(state.totalLiveAssets, 120e18);
+        assertEq(state.totalConservativeAssets, 117e18);
+        assertEq(state.totalDeployedAssets, 70e18);
+        assertEq(state.totalIdleAssets, 50e18);
+        assertEq(healthyState.valuation.grossAssets, 60e18);
+        assertEq(healthyState.valuation.pendingRewards, 0);
+        assertEq(healthyState.valuation.haircutAmount, 3e18);
+        assertEq(healthyState.valuation.netAssets, 57e18);
+    }
+
     function testCapEnforcementBlocksOversizedAllocation() public {
         _seedStrategy(100e18);
 

@@ -22,6 +22,8 @@ contract CitreaUsdcAllocatorShellScriptsTest is Test {
     address internal constant CITREA_USDCE = 0xE045e6c36cF77FAA2CfB54466D71A3aEF7bbE839;
     uint256 internal constant DEPLOYER_KEY = 0xA11CE;
     uint256 internal constant FINAL_OWNER_KEY = 0xB0B;
+    address internal constant FINAL_OWNER_ADDRESS =
+        0x0376AAc07Ad725E01357B1725B5ceC61aE10473c;
     address internal constant GUARDIAN = address(0xBEEF);
     address internal constant STRATEGIST = address(0xB0B0);
 
@@ -52,6 +54,10 @@ contract CitreaUsdcAllocatorShellScriptsTest is Test {
         vm.etch(CITREA_USDCE, address(usdce).code);
 
         vm.setEnv("PRIVATE_KEY", vm.toString(DEPLOYER_KEY));
+        vm.setEnv("RISK_ENGINE_OWNER", vm.toString(ctx.broadcaster));
+        vm.setEnv("ORACLE_ROUTER_OWNER", vm.toString(ctx.broadcaster));
+        vm.setEnv("VAULT_FACTORY_OWNER", vm.toString(ctx.broadcaster));
+        vm.setEnv("DEPLOY_LENS", "true");
 
         DeployCitreaCore deployCore = new DeployCitreaCore();
         (RiskEngine riskEngine, OracleRouter oracleRouter, VaultFactory vaultFactory,) =
@@ -67,7 +73,7 @@ contract CitreaUsdcAllocatorShellScriptsTest is Test {
 
         vm.setEnv("VAULT_FACTORY_ADDRESS", vm.toString(ctx.vaultFactory));
         vm.setEnv("ORACLE_ROUTER_ADDRESS", vm.toString(ctx.oracleRouter));
-        vm.setEnv("FINAL_OWNER", vm.toString(ctx.finalOwner));
+        vm.setEnv("FINAL_OWNER", vm.toString(FINAL_OWNER_ADDRESS));
         vm.setEnv("GUARDIAN", vm.toString(GUARDIAN));
         vm.setEnv("STRATEGIST", vm.toString(STRATEGIST));
 
@@ -101,7 +107,7 @@ contract CitreaUsdcAllocatorShellScriptsTest is Test {
         vm.setEnv("ORACLE_ROUTER_ADDRESS", vm.toString(ctx.oracleRouter));
         vm.setEnv("VAULT_ADDRESS", vm.toString(ctx.vault));
         vm.setEnv("STRATEGY_ADDRESS", vm.toString(ctx.strategy));
-        vm.setEnv("FINAL_OWNER", vm.toString(ctx.finalOwner));
+        vm.setEnv("FINAL_OWNER", vm.toString(FINAL_OWNER_ADDRESS));
 
         TransferCitreaUsdcAllocatorShellOwnership transfer =
             new TransferCitreaUsdcAllocatorShellOwnership();
@@ -143,7 +149,7 @@ contract CitreaUsdcAllocatorShellScriptsTest is Test {
     function _verifyShellPostDeploy(
         ShellContext memory ctx
     ) internal {
-        vm.setEnv("FINAL_OWNER", vm.toString(ctx.finalOwner));
+        vm.setEnv("FINAL_OWNER", vm.toString(FINAL_OWNER_ADDRESS));
         vm.setEnv("VAULT_FACTORY_ADDRESS", vm.toString(ctx.vaultFactory));
         vm.setEnv("RISK_ENGINE_ADDRESS", vm.toString(ctx.riskEngine));
         vm.setEnv("VAULT_ADDRESS", vm.toString(ctx.vault));

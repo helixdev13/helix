@@ -29,6 +29,10 @@ contract CitreaUsdcBaseScriptsTest is Test {
         vm.etch(CITREA_USDCE, address(usdce).code);
 
         vm.setEnv("PRIVATE_KEY", vm.toString(DEPLOYER_KEY));
+        vm.setEnv("RISK_ENGINE_OWNER", vm.toString(broadcaster));
+        vm.setEnv("ORACLE_ROUTER_OWNER", vm.toString(broadcaster));
+        vm.setEnv("VAULT_FACTORY_OWNER", vm.toString(broadcaster));
+        vm.setEnv("DEPLOY_LENS", "true");
 
         DeployCitreaCore deployCore = new DeployCitreaCore();
         (RiskEngine riskEngine, , VaultFactory vaultFactory, ) =
