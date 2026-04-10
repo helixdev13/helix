@@ -82,7 +82,7 @@ That flagship should be:
 - April 10, 2026 narrow fallback screen is complete: no non-CL venue beyond blocked Zentra clears a build-now decision
 - v2 auto-compound deployment scaffold now exists separately from the frozen JuiceSwap config
 - `HelixLens` has a product-facing allocator read surface for the current stack
-- auto-compound ownership handoff and post-deploy verification scripts are still pending
+- auto-compound ownership handoff scripts now exist; post-deploy verification is still pending
 - venue-specific non-CL adapter work has not started
 - current first venue target remains `Zentra`
 - current venue decision state remains `no-build-yet`
@@ -295,6 +295,8 @@ If that bar is not met, venue-specific coding is premature.
 ### v2 deployment surface
 
 - [DeployCitreaAutoCompoundVault.s.sol](../contracts/script/DeployCitreaAutoCompoundVault.s.sol)
+- [TransferCitreaAutoCompoundVaultOwnership.s.sol](../contracts/script/TransferCitreaAutoCompoundVaultOwnership.s.sol)
+- [AcceptCitreaAutoCompoundVaultOwnership.s.sol](../contracts/script/AcceptCitreaAutoCompoundVaultOwnership.s.sol)
 - [HelixLens.sol](../contracts/src/periphery/HelixLens.sol)
 - [AutoCompoundClStrategy.sol](../contracts/src/strategies/AutoCompoundClStrategy.sol)
 - [RewardDistributor.sol](../contracts/src/periphery/RewardDistributor.sol)

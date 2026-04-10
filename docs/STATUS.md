@@ -53,6 +53,7 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 
 - allocator foundation exists in code
 - auto-compound Citrea deployment scaffold exists in code
+- auto-compound ownership handoff scripts exist in code
 - venue-specific non-CL adapter work has not started
 - the frozen live `JuiceSwap` path remains the only deployed lane
 

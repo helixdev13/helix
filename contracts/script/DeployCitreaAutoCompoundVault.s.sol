@@ -124,24 +124,6 @@ contract DeployCitreaAutoCompoundVault is Script {
         }
 
         hlxToken.grantRole(MINTER_ROLE, address(strategy));
-        hlxToken.grantRole(hlxToken.DEFAULT_ADMIN_ROLE(), config.finalOwner);
-        hlxToken.revokeRole(MINTER_ROLE, config.broadcaster);
-        hlxToken.revokeRole(hlxToken.DEFAULT_ADMIN_ROLE(), config.broadcaster);
-        if (
-            !hlxToken.hasRole(hlxToken.DEFAULT_ADMIN_ROLE(), config.finalOwner)
-                || hlxToken.hasRole(hlxToken.DEFAULT_ADMIN_ROLE(), config.broadcaster)
-                || hlxToken.hasRole(MINTER_ROLE, config.broadcaster)
-                || !hlxToken.hasRole(MINTER_ROLE, address(strategy))
-        ) {
-            revert("HLX token role handoff mismatch");
-        }
-
-        vaultFactory.transferOwnership(config.finalOwner);
-        riskEngine.transferOwnership(config.finalOwner);
-        oracleRouter.transferOwnership(config.finalOwner);
-        vault.transferOwnership(config.finalOwner);
-        strategy.transferOwnership(config.finalOwner);
-        rewardDistributor.transferOwnership(config.finalOwner);
 
         vm.stopBroadcast();
 
@@ -163,13 +145,7 @@ contract DeployCitreaAutoCompoundVault is Script {
         console2.log("Paused:", false);
         console2.log("Withdraw only:", false);
         console2.log("Strategy attached:", address(vault.strategy()));
-        console2.log("VaultFactory pending owner:", vaultFactory.pendingOwner());
-        console2.log("RiskEngine pending owner:", riskEngine.pendingOwner());
-        console2.log("OracleRouter pending owner:", oracleRouter.pendingOwner());
-        console2.log("Vault pending owner:", vault.pendingOwner());
-        console2.log("Strategy pending owner:", strategy.pendingOwner());
-        console2.log("RewardDistributor pending owner:", rewardDistributor.pendingOwner());
-        console2.log("HLX admin:", config.finalOwner);
+        console2.log("HLX admin:", config.broadcaster);
         console2.log("HLX minter:", address(strategy));
     }
 
