@@ -84,6 +84,7 @@ That flagship should be:
 - `HelixLens` has a product-facing allocator read surface for the current stack
 - auto-compound deployment, transfer, and acceptance scripts now exist
 - USDC.e base-vault ownership handoff scripts now exist
+- USDC.e base-vault rehearsal harness now exists
 - post-deploy read-only verification is complete
 - venue-specific non-CL adapter work has not started
 - current first venue target remains `Zentra`
@@ -314,6 +315,7 @@ If that bar is not met, venue-specific coding is premature.
 - [DeployCitreaUsdcBase.s.sol](../contracts/script/DeployCitreaUsdcBase.s.sol)
 - [TransferCitreaUsdcBaseOwnership.s.sol](../contracts/script/TransferCitreaUsdcBaseOwnership.s.sol)
 - [AcceptCitreaUsdcBaseOwnership.s.sol](../contracts/script/AcceptCitreaUsdcBaseOwnership.s.sol)
+- [CitreaUsdcBaseScripts.t.sol](../contracts/test/CitreaUsdcBaseScripts.t.sol)
 - [HelixLens.sol](../contracts/src/periphery/HelixLens.sol)
 - [AutoCompoundClStrategy.sol](../contracts/src/strategies/AutoCompoundClStrategy.sol)
 - [RewardDistributor.sol](../contracts/src/periphery/RewardDistributor.sol)
