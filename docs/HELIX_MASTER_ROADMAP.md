@@ -86,6 +86,8 @@ That flagship should be:
 - USDC.e base-vault ownership handoff scripts now exist
 - USDC.e base-vault rehearsal harness now exists
 - USDC.e base-vault post-deploy verification script now exists
+- USDC.e allocator-shell deployment, transfer, acceptance, and verification scripts now exist
+- USDC.e allocator-shell rehearsal harness now exists
 - post-deploy read-only verification is complete
 - venue-specific non-CL adapter work has not started
 - current first venue target remains `Zentra`

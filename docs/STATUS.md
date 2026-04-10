@@ -59,6 +59,8 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 - USDC.e base-vault ownership handoff scripts have been added
 - USDC.e base-vault rehearsal harness has been added
 - USDC.e base-vault post-deploy verification script has been added
+- USDC.e allocator-shell deployment, transfer, acceptance, and verification scripts have been added
+- USDC.e allocator-shell rehearsal harness has been added
 - venue-specific non-CL adapter work has not started
 - the frozen live `JuiceSwap` path remains untouched
 - the deployed auto-compound stack is the current product-facing deployed lane
