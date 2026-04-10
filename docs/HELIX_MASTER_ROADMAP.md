@@ -122,6 +122,10 @@ Objective:
 
 - make the allocator core reusable, venue-agnostic, and test-backed
 
+Current status:
+
+- implemented and test-backed
+
 Required themes:
 
 - correctness hardening
@@ -143,13 +147,13 @@ Objective:
 Required work:
 
 - richer reporting/state surfaces: implemented for policy state, allocation capacity, adapter
-  summaries, withdrawal plans, and deallocation plans
+  summaries, and allocator state rollups
 - clear live vs conservative valuation separation
 - idle floor / liquidity reserve logic
 - degraded vs blocked handling
 - stronger policy hooks
-- better multi-adapter readiness: started through deterministic mock routing and preview/execution
-  tests
+- better multi-adapter readiness: started through deterministic registration-order routing,
+  health-aware withdrawal ordering, and mixed-health allocator tests
 
 Exit condition:
 
@@ -163,11 +167,12 @@ Objective:
 
 Required work:
 
-- deterministic adapter registry behavior: implemented for equal-liquidity routing tie-breaks
+- deterministic adapter registry behavior: implemented through stable registration order and
+  health-bucket iteration
 - health-aware deallocation ordering: implemented for healthy-before-degraded, blocked-skipped
   routing
 - aggregate state correctness across mixed adapter health: covered in allocator tests
-- repeated-cycle robustness
+- repeated-cycle robustness: covered in allocator tests
 
 Exit condition:
 
@@ -297,6 +302,11 @@ If that bar is not met, venue-specific coding is premature.
 
 ### v2 deployment surface
 
+- [AllocatorTypes.sol](../contracts/src/libraries/AllocatorTypes.sol)
+- [IAllocatorAdapter.sol](../contracts/src/interfaces/IAllocatorAdapter.sol)
+- [ManagedAllocatorStrategy.sol](../contracts/src/strategies/ManagedAllocatorStrategy.sol)
+- [MockAllocatorAdapter.sol](../contracts/src/adapters/MockAllocatorAdapter.sol)
+- [ManagedAllocatorStrategy.t.sol](../contracts/test/ManagedAllocatorStrategy.t.sol)
 - [DeployCitreaAutoCompoundVault.s.sol](../contracts/script/DeployCitreaAutoCompoundVault.s.sol)
 - [TransferCitreaAutoCompoundVaultOwnership.s.sol](../contracts/script/TransferCitreaAutoCompoundVaultOwnership.s.sol)
 - [AcceptCitreaAutoCompoundVaultOwnership.s.sol](../contracts/script/AcceptCitreaAutoCompoundVaultOwnership.s.sol)

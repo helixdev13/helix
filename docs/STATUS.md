@@ -53,7 +53,7 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 
 ## Current Build Status
 
-- allocator foundation exists in code
+- allocator foundation implemented and test-backed
 - auto-compound Citrea deployment has been executed onchain
 - auto-compound ownership handoff has been completed
 - venue-specific non-CL adapter work has not started
@@ -78,6 +78,11 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 - [HELIX_V2_LAUNCH_CHECKLIST.md](./HELIX_V2_LAUNCH_CHECKLIST.md)
 - [config/citrea/juiceswap_usdce_wcbtc_candidate.md](../config/citrea/juiceswap_usdce_wcbtc_candidate.md)
 - [HELIX_MASTER_ROADMAP.md](./HELIX_MASTER_ROADMAP.md)
+- [AllocatorTypes.sol](../contracts/src/libraries/AllocatorTypes.sol)
+- [IAllocatorAdapter.sol](../contracts/src/interfaces/IAllocatorAdapter.sol)
+- [ManagedAllocatorStrategy.sol](../contracts/src/strategies/ManagedAllocatorStrategy.sol)
+- [MockAllocatorAdapter.sol](../contracts/src/adapters/MockAllocatorAdapter.sol)
+- [ManagedAllocatorStrategy.t.sol](../contracts/test/ManagedAllocatorStrategy.t.sol)
 - [DeployCitreaAutoCompoundVault.s.sol](../contracts/script/DeployCitreaAutoCompoundVault.s.sol)
 - [HelixLens.sol](../contracts/src/periphery/HelixLens.sol)
 - [AutoCompoundClStrategy.sol](../contracts/src/strategies/AutoCompoundClStrategy.sol)
