@@ -108,6 +108,46 @@ contract JuiceSwapClAdapterTest is Test {
         assertLt(adapter.valuation().grossAssets, grossBefore);
     }
 
+    function testWithdrawToSucceedsWhenBaseOracleIsStale() public {
+        _deployPosition();
+        _setBaseOracleStale();
+
+        uint256 withdrawn = adapter.withdrawTo(RECEIVER, 5000e6);
+
+        assertEq(withdrawn, 5000e6);
+        assertEq(ctusd.balanceOf(RECEIVER), 5000e6);
+        assertEq(adapter.positionTokenId(), 0);
+        assertFalse(adapter.positionState().active);
+        assertEq(wcbtc.balanceOf(address(adapter)), 0);
+        assertGt(ctusd.balanceOf(address(adapter)), 0);
+    }
+
+    function testWithdrawToSucceedsWhenPairOracleIsStale() public {
+        _deployPosition();
+        _setPairOracleStale();
+
+        uint256 withdrawn = adapter.withdrawTo(RECEIVER, 5000e6);
+
+        assertEq(withdrawn, 5000e6);
+        assertEq(ctusd.balanceOf(RECEIVER), 5000e6);
+        assertEq(adapter.positionTokenId(), 0);
+        assertFalse(adapter.positionState().active);
+        assertEq(wcbtc.balanceOf(address(adapter)), 0);
+    }
+
+    function testWithdrawToSucceedsWhenPairOracleIsMissing() public {
+        _deployPosition();
+        _clearOracle(address(wcbtc));
+
+        uint256 withdrawn = adapter.withdrawTo(RECEIVER, 5000e6);
+
+        assertEq(withdrawn, 5000e6);
+        assertEq(ctusd.balanceOf(RECEIVER), 5000e6);
+        assertEq(adapter.positionTokenId(), 0);
+        assertFalse(adapter.positionState().active);
+        assertEq(wcbtc.balanceOf(address(adapter)), 0);
+    }
+
     function testHarvestToCollectsFeesInBaseAsset() public {
         Types.RebalanceIntent memory intent = _intent(20_000e6, 0, 1_000_000_000_000);
         adapter.executeRebalance(intent, adapter.quoteRebalance(intent), _limits(0, 5000e6));
@@ -315,5 +355,31 @@ contract JuiceSwapClAdapterTest is Test {
         return Types.ExecutionLimits({
             minAssetsOut: minAssetsOut, maxLoss: maxLoss, deadline: uint64(block.timestamp + 1 days)
         });
+    }
+
+    function _deployPosition() internal {
+        Types.RebalanceIntent memory intent = _intent(20_000e6, 0, 1_000_000_000_000);
+        adapter.executeRebalance(intent, adapter.quoteRebalance(intent), _limits(0, 5000e6));
+    }
+
+    function _setBaseOracleStale() internal {
+        vm.warp(block.timestamp + ORACLE_HEARTBEAT + 2);
+        wcbtcOracle.setPrice(WCBTC_PRICE);
+        uint48 staleAt = uint48(block.timestamp - ORACLE_HEARTBEAT - 1);
+        ctusdOracle.setPriceWithTimestamp(1e18, staleAt);
+    }
+
+    function _setPairOracleStale() internal {
+        vm.warp(block.timestamp + ORACLE_HEARTBEAT + 2);
+        ctusdOracle.setPrice(1e18);
+        uint48 staleAt = uint48(block.timestamp - ORACLE_HEARTBEAT - 1);
+        wcbtcOracle.setPriceWithTimestamp(WCBTC_PRICE, staleAt);
+    }
+
+    function _clearOracle(
+        address asset
+    ) internal {
+        bytes32 configSlot = keccak256(abi.encode(asset, uint256(2)));
+        vm.store(address(oracleRouter), configSlot, bytes32(0));
     }
 }

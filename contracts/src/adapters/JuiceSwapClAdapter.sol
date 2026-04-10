@@ -28,6 +28,7 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
     uint16 public constant BPS_DENOMINATOR = 10_000;
     uint24 public constant FEE_DENOMINATOR = 1_000_000;
     uint128 internal constant MAX_COLLECT_AMOUNT = type(uint128).max;
+    uint32 internal constant EXIT_TWAP_WINDOW = 30 minutes;
 
     IERC20 public immutable ASSET_TOKEN;
     IERC20 public immutable PAIR_TOKEN;
@@ -220,7 +221,7 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
             ASSET_TOKEN.safeTransferFrom(msg.sender, address(this), intent.assetsToDeploy);
         }
 
-        _collapsePositionToBase();
+        _collapsePositionToBase(true);
 
         uint256 assetsOut = intent.assetsToWithdraw;
         uint256 baseAvailable = ASSET_TOKEN.balanceOf(address(this));
@@ -272,7 +273,8 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
         }
 
         PositionSnapshot memory previous = _readPositionSnapshot();
-        _collapsePositionToBase();
+        bool useOracleExitChecks = _oracleExitChecksAvailable();
+        _collapsePositionToBase(useOracleExitChecks);
 
         uint256 baseAvailable = ASSET_TOKEN.balanceOf(address(this));
         if (baseAvailable < assets) {
@@ -283,7 +285,8 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
         assetsWithdrawn = assets;
 
         uint256 remainingBase = ASSET_TOKEN.balanceOf(address(this));
-        if (previous.exists && previous.liquidity != 0 && remainingBase != 0) {
+        if (useOracleExitChecks && previous.exists && previous.liquidity != 0 && remainingBase != 0)
+        {
             uint256 previousCost =
                 _baseCostForLiquidity(previous.lowerTick, previous.upperTick, previous.liquidity);
             if (previousCost != 0) {
@@ -325,7 +328,7 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
 
         uint256 baseBefore = ASSET_TOKEN.balanceOf(address(this));
         _collectPositionFees();
-        _swapAllQuoteToBase();
+        _swapAllQuoteToBase(true);
 
         assetsHarvested = ASSET_TOKEN.balanceOf(address(this)) - baseBefore;
         if (assetsHarvested != 0) {
@@ -343,7 +346,7 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
             revert Errors.ZeroAddress();
         }
 
-        _collapsePositionToBase();
+        _collapsePositionToBase(_oracleExitChecksAvailable());
         assetsReturned = ASSET_TOKEN.balanceOf(address(this));
         if (assetsReturned != 0) {
             ASSET_TOKEN.safeTransfer(receiver, assetsReturned);
@@ -485,7 +488,9 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
         positionTokenId = tokenId;
     }
 
-    function _collapsePositionToBase() internal {
+    function _collapsePositionToBase(
+        bool useOracleExitChecks
+    ) internal {
         PositionSnapshot memory snapshot = _readPositionSnapshot();
         if (snapshot.exists) {
             if (snapshot.liquidity != 0) {
@@ -513,7 +518,7 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
             positionTokenId = 0;
         }
 
-        _swapAllQuoteToBase();
+        _swapAllQuoteToBase(useOracleExitChecks);
     }
 
     function _collectPositionFees() internal {
@@ -531,14 +536,17 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
         );
     }
 
-    function _swapAllQuoteToBase() internal {
+    function _swapAllQuoteToBase(
+        bool useOracleExitChecks
+    ) internal {
         uint256 quoteBalance = PAIR_TOKEN.balanceOf(address(this));
         if (quoteBalance == 0) {
             return;
         }
 
-        _validatedPoolState();
-        uint256 minBaseOut = _minimumBaseOutForQuoteAmount(quoteBalance);
+        uint256 minBaseOut = useOracleExitChecks
+            ? _minimumBaseOutForQuoteAmount(quoteBalance)
+            : _minimumForcedExitBaseOutForQuoteAmount(quoteBalance);
 
         PAIR_TOKEN.forceApprove(address(SWAP_ROUTER), 0);
         PAIR_TOKEN.forceApprove(address(SWAP_ROUTER), quoteBalance);
@@ -750,6 +758,22 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
         _assertPoolPriceWithinReference(sqrtPriceX96);
     }
 
+    function _oracleExitChecksAvailable() internal view returns (bool) {
+        try ORACLE_ROUTER.getPrice(address(ASSET_TOKEN)) returns (uint256 assetPrice, uint256) {
+            if (assetPrice == 0) {
+                return false;
+            }
+        } catch {
+            return false;
+        }
+
+        try ORACLE_ROUTER.getPrice(address(PAIR_TOKEN)) returns (uint256 pairPrice, uint256) {
+            return pairPrice != 0;
+        } catch {
+            return false;
+        }
+    }
+
     function _currentFeeGrowthInsideX128(
         int24 lowerTick,
         int24 upperTick,
@@ -831,6 +855,33 @@ contract JuiceSwapClAdapter is IClAdapter, ReentrancyGuard {
         minBaseOut = Math.mulDiv(
             referenceBaseAfterFee, BPS_DENOMINATOR - MAX_PRICE_DEVIATION_BPS, BPS_DENOMINATOR
         );
+    }
+
+    function _minimumForcedExitBaseOutForQuoteAmount(
+        uint256 quoteAmount
+    ) internal view returns (uint256 minBaseOut) {
+        uint160 exitSqrtPriceX96 = _forcedExitSqrtPriceX96();
+        uint256 baseAfterFee = _quoteToBaseAfterFee(quoteAmount, exitSqrtPriceX96);
+        minBaseOut =
+            Math.mulDiv(baseAfterFee, BPS_DENOMINATOR - MAX_PRICE_DEVIATION_BPS, BPS_DENOMINATOR);
+    }
+
+    function _forcedExitSqrtPriceX96() internal view returns (uint160 sqrtPriceX96) {
+        uint32[] memory secondsAgos = new uint32[](2);
+        secondsAgos[0] = EXIT_TWAP_WINDOW;
+        secondsAgos[1] = 0;
+
+        try POOL.observe(secondsAgos) returns (int56[] memory tickCumulatives, uint160[] memory) {
+            int56 tickDelta = tickCumulatives[1] - tickCumulatives[0];
+            int56 window = int56(uint56(EXIT_TWAP_WINDOW));
+            int24 meanTick = int24(tickDelta / window);
+            if (tickDelta < 0 && tickDelta % window != 0) {
+                meanTick -= 1;
+            }
+            return JuiceSwapTickMath.getSqrtRatioAtTick(meanTick);
+        } catch {
+            (sqrtPriceX96,,,,,,) = POOL.slot0();
+        }
     }
 
     function _poolQuoteForBaseAmount(

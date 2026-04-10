@@ -1,18 +1,39 @@
 # Helix
 
-Helix is a vault and strategy foundation for controlled onchain yield deployment.
+Helix is a Citrea-native yield optimizer in development.
 
-This repository currently centers on:
+The repository now has two active layers:
 
-- an ERC-4626-style vault core
-- explicit risk and oracle routing surfaces
-- a managed concentrated-liquidity strategy boundary
-- a JuiceSwap adapter path for Citrea
-- Citrea release and launch-candidate packaging
+- a frozen live Citrea deployment
+- a new v2 allocator foundation for the flagship smart-vault lane
 
-## What Is Implemented
+## Current Live State
 
-### Accepted core contracts
+The current live stack is already deployed on Citrea and remains intentionally frozen:
+
+- venue lane: `JuiceSwap`
+- pair: `USDC.e / wcBTC`
+- posture: deployed, owned, strategy-attached, disabled by default
+- current safety state: `maxAllocationBps = 0`, `paused = false`, `withdrawOnly = false`
+
+This live path is not the full Helix product identity.
+It is one specialist concentrated-liquidity lane and one frozen production-shaped deployment.
+
+## Current Product Direction
+
+Helix v2 is now defined as:
+
+- a yield optimizer / aggregator
+- flagship first lane: `HLX-USDC.e Smart Vault`
+- architecture: `vault + strategy + adapter`
+- strategy family now being built: generic allocator foundation
+
+The next major coding direction is allocator-first and venue-agnostic.
+No venue-specific non-CL adapter is approved yet.
+
+## Implemented Contract Families
+
+### Frozen live lane
 
 - `HelixVault`
 - `RiskEngine`
@@ -21,61 +42,43 @@ This repository currently centers on:
 - `ManagedClStrategy`
 - `JuiceSwapClAdapter`
 
-### Accepted Citrea path
+### v2 foundation in progress
 
-- first release: `HLX-ctUSD Base`
-- first release posture: no strategy attached, `maxAllocationBps = 0`
-- first live candidate: `USDC.e / wcBTC` on `JuiceSwap`
-- live candidate posture: one pool, one fee tier, one adapter deployment, disabled by default
+- `ManagedAllocatorStrategy`
+- `IAllocatorAdapter`
+- `AllocatorTypes`
+- allocator mocks and tests
 
-## What Is Accepted Versus Experimental
+## Start Here
 
-### Accepted
+### Current state and live deployment
 
-- core vault and risk architecture
-- managed adapter boundary
-- JuiceSwap implementation foundation and hardening
-- Citrea deployment docs and launch-candidate packaging
-- `USDC.e / wcBTC` as the current first live candidate on Citrea
+- [docs/STATUS.md](docs/STATUS.md)
+- [docs/CURRENT_DEPLOYED_STATE.md](docs/CURRENT_DEPLOYED_STATE.md)
+- [docs/JUICESWAP_OPERATOR_HANDOFF.md](docs/JUICESWAP_OPERATOR_HANDOFF.md)
+- [docs/JUICESWAP_LIVE_RUNBOOK.md](docs/JUICESWAP_LIVE_RUNBOOK.md)
+- [docs/JUICESWAP_ORACLE_FREEZE.md](docs/JUICESWAP_ORACLE_FREEZE.md)
+- [config/citrea/juiceswap_usdce_wcbtc_candidate.md](config/citrea/juiceswap_usdce_wcbtc_candidate.md)
 
-### Not production-ready yet
+### v2 direction and build plan
 
-- no mainnet deployment has been executed from this repo
-- no same-day broadcast verification has been completed
-- no live capital has been enabled on the JuiceSwap candidate
-- operational wallet setup and funding still need to be finalized
-- mainnet go/no-go checks still need to be rerun immediately before broadcast
-
-## Current Citrea Direction
-
-Helix currently keeps two Citrea tracks separate on purpose:
-
-- engineering pair: `ctUSD / wcBTC`
-- first live candidate: `USDC.e / wcBTC`
-
-That split exists because:
-
-- `ctUSD / wcBTC` remains the intended product-direction pair
-- `USDC.e / wcBTC` currently has the cleaner oracle path for a first live deployment candidate
+- [docs/HELIX_MASTER_ROADMAP.md](docs/HELIX_MASTER_ROADMAP.md)
+- [docs/HELIX_V2_EXEC_SUMMARY.md](docs/HELIX_V2_EXEC_SUMMARY.md)
+- [docs/HELIX_V2_DECISION.md](docs/HELIX_V2_DECISION.md)
+- [docs/HELIX_V2_CONTRACT_PLAN.md](docs/HELIX_V2_CONTRACT_PLAN.md)
+- [docs/HELIX_V2_ALLOCATOR_REVIEW.md](docs/HELIX_V2_ALLOCATOR_REVIEW.md)
 
 ## Repository Structure
 
 ```text
 contracts/
-  src/        # protocol and adapter contracts
+  src/        # protocol, strategy, adapter, and oracle contracts
   test/       # Foundry unit, integration, and fork tests
-  script/     # deployment and setup scripts
-docs/         # architecture, Citrea diligence, runbooks, and status docs
-config/       # concrete Citrea config profiles
+  script/     # deployment and ownership/oracle scripts
+docs/         # frozen live docs plus v2 product/build specs
+config/       # concrete Citrea deployment and candidate profiles
+broadcast/    # raw machine-generated deployment outputs
 ```
-
-## Start Here
-
-- [docs/STATUS.md](docs/STATUS.md)
-- [docs/CITREA_INTEGRATION_PLAN.md](docs/CITREA_INTEGRATION_PLAN.md)
-- [docs/JUICESWAP_LIVE_RUNBOOK.md](docs/JUICESWAP_LIVE_RUNBOOK.md)
-- [config/citrea/juiceswap_usdce_wcbtc_candidate.md](config/citrea/juiceswap_usdce_wcbtc_candidate.md)
-- [docs/CITREA_MAINNET_PREREQUISITES.md](docs/CITREA_MAINNET_PREREQUISITES.md)
 
 ## Local Development
 
@@ -91,27 +94,21 @@ Build:
 forge build
 ```
 
-Run the full test suite:
+Run the full suite:
 
 ```bash
 forge test -vvv
 ```
 
-Run the current Citrea live-candidate checks:
+Run the allocator foundation suite only:
+
+```bash
+forge test --match-contract ManagedAllocatorStrategyTest -vvv
+```
+
+Run the frozen live-candidate checks:
 
 ```bash
 forge test --match-contract JuiceSwapUsdcLiveCandidateTest -vvv
 CITREA_RPC_URL=https://rpc.mainnet.citrea.xyz forge test --match-contract JuiceSwapCitreaLaunchForkTest -vvv
 ```
-
-## Public Repo Notes
-
-This repository is being packaged for public publication under the `helixdev13` GitHub namespace.
-
-Reviewers should treat:
-
-- `docs/STATUS.md` as the current state summary
-- `docs/JUICESWAP_LIVE_RUNBOOK.md` as the current operator runbook
-- `config/citrea/juiceswap_usdce_wcbtc_candidate.md` as the concrete first live-candidate config
-
-The repo is intended to be understandable without local-only context.

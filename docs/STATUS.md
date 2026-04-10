@@ -4,15 +4,15 @@
 
 Helix is in:
 
-- release packaging
-- Citrea launch-candidate preparation
-- public repo migration prep
+- frozen live deployment maintenance
+- v2 allocator-foundation development
+- venue-agnostic flagship build planning
 
-This is not yet a production deployment phase.
+The current live Citrea deployment exists already, but productive allocation is still disabled.
 
-## Accepted State
+## Frozen Live State
 
-### Core
+### Citrea live lane
 
 - `HelixVault` accounting model
 - `RiskEngine` policy model
@@ -21,55 +21,57 @@ This is not yet a production deployment phase.
 - `ManagedClStrategy`
 - `JuiceSwapClAdapter`
 
-### Citrea release path
-
-- first release: `HLX-ctUSD Base`
-- release posture: strategy unset
-- `maxAllocationBps = 0`
-
-### Citrea live-candidate path
-
 - venue: `JuiceSwap`
-- live candidate: `USDC.e / wcBTC`
+- live lane: `USDC.e / wcBTC`
 - fee tier: `3000`
 - one approved pool
 - one adapter deployment
-- disabled by default until explicit enable conditions are met
+- deployment complete
+- ownership accepted
+- strategy attached
+- disabled by default
 
-## Not Production-Ready Yet
+## Current Safety Posture
 
-The following are still not complete:
+- `maxAllocationBps = 0`
+- `paused = false`
+- `withdrawOnly = false`
+- no productive allocation enabled
 
-- no same-day mainnet verification run has been completed
-- no production wallet / multisig set has been frozen in repo docs
-- no live broadcast has been executed from the packaged scripts
-- no live productive allocation has been enabled
-- no post-deploy operational rehearsal has been completed with real operator addresses
+## Current v2 Direction
 
-## Next Milestone
+Helix v2 is now defined as:
 
-Recommended next milestone:
+- a Citrea-native yield optimizer / aggregator
+- flagship first product: `HLX-USDC.e Smart Vault`
+- strategy family in progress: generic allocator lane
+- first non-CL venue work: blocked until venue approval clears
 
-- final broadcast rehearsal and go/no-go review for the accepted `USDC.e / wcBTC` live candidate
+The current deployed `JuiceSwap` stack remains untouched while this work proceeds.
 
-That milestone should be operational, not architectural.
+## Current Build Status
 
-## What Must Happen Before Mainnet Deployment
+- allocator foundation exists in code
+- venue-specific non-CL adapter work has not started
+- the frozen live `JuiceSwap` path remains the only deployed lane
 
-Before any mainnet broadcast:
+## Immediate Next Engineering Focus
 
-- finalize deployer, owner, and guardian addresses
-- fund deployer with sufficient `cBTC`
-- verify live oracle paths for `USDC.e` and `wcBTC`
-- re-verify the approved `JuiceSwap` pool and fee tier on the same day
-- rerun the targeted candidate tests
-- confirm the initial cap and disabled-by-default posture
-- confirm the owner and guardian runbooks are ready
+- harden and extend the generic allocator foundation
+- preserve venue-agnostic strategy and adapter boundaries
+- do not start a real `Zentra` or other venue adapter until diligence clears
+- do not modify the frozen live deployment path as part of v2 work
 
 ## Current Source-Of-Truth Docs
 
+- [CURRENT_DEPLOYED_STATE.md](./CURRENT_DEPLOYED_STATE.md)
+- [JUICESWAP_OPERATOR_HANDOFF.md](./JUICESWAP_OPERATOR_HANDOFF.md)
 - [JUICESWAP_LIVE_RUNBOOK.md](./JUICESWAP_LIVE_RUNBOOK.md)
+- [JUICESWAP_ORACLE_FREEZE.md](./JUICESWAP_ORACLE_FREEZE.md)
 - [CITREA_MAINNET_PREREQUISITES.md](./CITREA_MAINNET_PREREQUISITES.md)
-- [CITREA_INTEGRATION_PLAN.md](./CITREA_INTEGRATION_PLAN.md)
-- [JUICESWAP_LAUNCH_CONSTRAINTS.md](./JUICESWAP_LAUNCH_CONSTRAINTS.md)
 - [config/citrea/juiceswap_usdce_wcbtc_candidate.md](../config/citrea/juiceswap_usdce_wcbtc_candidate.md)
+- [HELIX_MASTER_ROADMAP.md](./HELIX_MASTER_ROADMAP.md)
+- [HELIX_V2_EXEC_SUMMARY.md](./HELIX_V2_EXEC_SUMMARY.md)
+- [HELIX_V2_DECISION.md](./HELIX_V2_DECISION.md)
+- [HELIX_V2_CONTRACT_PLAN.md](./HELIX_V2_CONTRACT_PLAN.md)
+- [HELIX_V2_ALLOCATOR_REVIEW.md](./HELIX_V2_ALLOCATOR_REVIEW.md)

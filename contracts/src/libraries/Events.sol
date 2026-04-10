@@ -24,7 +24,36 @@ library Events {
     event StrategyStrategistUpdated(address indexed strategist);
     event StrategyGuardianUpdated(address indexed guardian);
     event RebalancePauseUpdated(address indexed caller, bool enabled);
+    event AllocatorPauseUpdated(address indexed caller, bool enabled);
+    event AllocatorIdleFloorUpdated(address indexed caller, uint16 previousBps, uint16 newBps);
+    event AllocatorGlobalAllocationCapUpdated(
+        address indexed caller, uint16 previousBps, uint16 newBps
+    );
     event AdapterStrategyBound(address indexed adapter, address indexed strategy);
+    event AllocatorAdapterConfigured(
+        address indexed adapter, bool enabled, uint16 maxAllocationBps
+    );
+    event AllocatorAllocated(address indexed strategy, address indexed adapter, uint256 assets);
+    event AllocatorDeallocated(address indexed strategy, address indexed adapter, uint256 assets);
+    event AllocatorAdapterWithdrawal(
+        address indexed strategy,
+        address indexed adapter,
+        uint256 requestedAssets,
+        uint256 assetsReceived
+    );
+    event AllocatorAdapterHarvest(
+        address indexed strategy, address indexed adapter, uint256 assetsHarvested
+    );
+    event AllocatorAdapterUnwind(
+        address indexed strategy, address indexed adapter, uint256 assetsReturned
+    );
+    event AllocatorAdapterOperationFailed(
+        address indexed strategy,
+        address indexed adapter,
+        uint8 indexed operation,
+        uint256 requestedAssets,
+        bytes reason
+    );
     event StrategyRebalanced(
         address indexed strategy,
         address indexed adapter,
@@ -46,4 +75,21 @@ library Events {
         uint64 quoteValidity,
         bool forceQuoteInvalid
     );
+    event CompoundExecuted(
+        address indexed strategy,
+        uint256 profit,
+        uint256 performanceFee,
+        uint256 treasuryFee,
+        uint256 hlxMinted,
+        uint256 bounty,
+        uint256 reinvestAmount,
+        bool reinvested
+    );
+    event ReinvestDeferred(address indexed strategy, uint256 amount, bytes reason);
+    event RewardDistributed(address indexed distributor, uint256 amount);
+    event HlxMintRateUpdated(address indexed caller, uint256 previousRate, uint256 newRate);
+    event CompoundConfigUpdated(address indexed caller, string parameter, uint256 value);
+    event PerformanceFeeUpdated(address indexed caller, uint16 previousBps, uint16 newBps);
+    event RewardRatioUpdated(address indexed caller, uint16 previousBps, uint16 newBps);
+    event CompoundCooldownUpdated(address indexed caller, uint256 previous, uint256 newCooldown);
 }

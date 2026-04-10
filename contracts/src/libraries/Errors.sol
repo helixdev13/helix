@@ -37,6 +37,19 @@ library Errors {
     error InvalidTickSpacing(int24 lowerTick, int24 upperTick, int24 spacing);
     error InvalidQuoteWindow();
     error StrategyAlreadyBound(address strategy);
+    error AdapterAlreadyAdded(address adapter);
+    error AdapterNotApproved(address adapter);
+    error AdapterDisabled(address adapter);
+    error AdapterNotHealthy(address adapter, uint8 health);
+    error AdapterCapacityExceeded(address adapter, uint256 requestedAssets, uint256 maxDeposit);
+    error AdapterDepositMismatch(
+        address adapter,
+        uint256 requestedAssets,
+        uint256 actualAssetsSpent,
+        uint256 reportedAssetsDeployed
+    );
+    error IdleFloorViolation(uint256 idleAssetsAfter, uint256 minimumIdleRequired);
+    error InvalidRewardAmounts(uint256 conservativeRewards, uint256 liveRewards);
     error PoolNotFound(address tokenA, address tokenB, uint24 fee);
     error InvalidPoolTokens(
         address expectedAsset, address expectedPair, address token0, address token1
@@ -48,4 +61,12 @@ library Errors {
         uint256 maxDeviationBps
     );
     error UnexpectedLiquidity(uint128 actualLiquidity, uint128 targetLiquidity);
+    error CompoundCooldownActive(uint256 remaining);
+    error InsufficientProfit(uint256 profit, uint256 threshold);
+    error InvalidHlxMintRate();
+    error InvalidRewardRatio();
+    error InvalidBountyBps(uint256 bps);
+    error RewardMintFailed();
+    error FeeTransferFailed();
+    error NoPositionToReinvest();
 }

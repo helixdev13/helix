@@ -83,6 +83,21 @@ If the exact layout differs, preserve the existing structure and apply the same 
 
 ## Responsibilities of the agent
 
+### Roadmap discipline
+
+The repository has one canonical roadmap file:
+
+- `docs/HELIX_MASTER_ROADMAP.md`
+
+When the agent works on planning, implementation sequencing, project direction, milestone status, or major scope changes, it must:
+
+1. read `docs/HELIX_MASTER_ROADMAP.md` first,
+2. treat it as the roadmap source of truth,
+3. update it whenever the project state, phase, milestone ordering, or immediate priority materially changes,
+4. avoid leaving roadmap-critical decisions only in chat.
+
+If other roadmap-like docs disagree with the master roadmap, the agent should align them to the master roadmap or mark them as secondary.
+
 ### Ingest
 The agent should:
 - detect new or changed material in `raw/`,
@@ -314,6 +329,8 @@ When modifying the repository, the agent should:
 - avoid deleting material unless it is clearly obsolete, duplicated, or superseded,
 - leave notes where future cleanup is needed,
 - maintain compatibility with downstream scripts and browsing workflows.
+- check whether `docs/HELIX_MASTER_ROADMAP.md` needs to be updated as part of the change,
+- keep the roadmap consistent with the current repo state after meaningful planning or implementation work.
 
 ---
 

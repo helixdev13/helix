@@ -6,9 +6,11 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 import { HelixVault } from "../src/HelixVault.sol";
 import { RiskEngine } from "../src/core/RiskEngine.sol";
+import { OracleRouter } from "../src/core/OracleRouter.sol";
 import { VaultFactory } from "../src/core/VaultFactory.sol";
 import { HelixLens } from "../src/periphery/HelixLens.sol";
 import { MockERC20 } from "../src/mocks/MockERC20.sol";
+import { MockOracle } from "../src/mocks/MockOracle.sol";
 
 contract VaultFactoryTest is Test {
     address internal constant GUARDIAN = address(0xBEEF);
@@ -16,12 +18,15 @@ contract VaultFactoryTest is Test {
 
     MockERC20 internal asset;
     RiskEngine internal riskEngine;
+    OracleRouter internal oracleRouter;
     VaultFactory internal factory;
     HelixLens internal lens;
 
     function setUp() public {
         asset = new MockERC20("Mock Asset", "MA", 18);
         riskEngine = new RiskEngine(address(this));
+        oracleRouter = new OracleRouter(address(this));
+        oracleRouter.setOracle(address(asset), address(new MockOracle(address(this), 1e18)), 1 days);
         factory = new VaultFactory(riskEngine, address(this));
         lens = new HelixLens();
     }

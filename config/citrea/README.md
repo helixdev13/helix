@@ -1,20 +1,14 @@
-# Citrea Configuration Stub
+# Citrea Configuration
 
 ## Purpose
 
-This file is a documentation-first Citrea config stub.
-
-It exists to keep chain, asset, venue, oracle, and deployment assumptions explicit while Helix is
-still in research/spec mode.
+This directory holds the current Citrea deployment and candidate profiles that still matter to the project.
 
 ## Configuration Files
 
-- [mainnet.md](/Users/melihkarakose/Desktop/helix/config/citrea/mainnet.md)
-  - deployment profile for the first Citrea release
-  - includes chain metadata, ctUSD metadata, config placeholders, and launch checklist
 - [juiceswap_usdce_wcbtc_candidate.md](/Users/melihkarakose/Desktop/helix/config/citrea/juiceswap_usdce_wcbtc_candidate.md)
-  - concrete first-live candidate profile for `USDC.e / wcBTC` on `JuiceSwap`
-  - includes the approved pool, fee tier, launch envelope, and verification checklist
+  - frozen profile for the deployed `USDC.e / wcBTC` `JuiceSwap` lane
+  - includes the approved pool, fee tier, frozen oracle mapping, ownership posture, and enablement gates
 
 ## Chain Metadata
 
@@ -24,101 +18,37 @@ still in research/spec mode.
 - explorer: `https://explorer.mainnet.citrea.xyz`
 - gas asset: `cBTC`
 
-## Asset Candidates
+## Active Asset References
 
-### Recommended first asset
-
-- `ctUSD`
-  - address: `0x8D82c4E3c936C7B5724A382a9c5a4E6Eb7aB6d5D`
-  - decimals: `6`
-  - role: recommended first Helix Citrea base-vault asset
-
-### Other notable assets
-
-- `wcBTC`
-  - address: `0x3100000000000000000000000000000000000006`
-  - role: later BTC-native product candidate
 - `USDC.e`
   - address: `0xE045e6c36cF77FAA2CfB54466D71A3aEF7bbE839`
-  - role: bridged stable candidate
-- `USDT.e`
-  - address: `0x9f3096Bac87e7F03DC09b0B416eB0DF837304dc4`
-  - role: bridged stable candidate
-- `WBTC.e`
-  - address: `0xDF240DC08B0FdaD1d93b74d5048871232f6BEA3d`
-  - role: bridged BTC candidate
+  - role: current live lane base asset
+- `wcBTC`
+  - address: `0x3100000000000000000000000000000000000006`
+  - role: current live lane BTC-side pair asset
 
-## Venue Candidates
-
-### First release
-
-- no venue dependency
-
-### First allocator candidate
-
-- `Morpho`
-  - status: due diligence required
-  - note: referenced by Citrea’s mainnet launch materials as a live lending primitive
-
-### First CL adapter candidate
+## Active Venue Profile
 
 - `JuiceSwap`
-  - status: approved first CL venue for implementation and launch-candidate prep
-  - note: first live candidate uses `USDC.e / wcBTC`, not `ctUSD / wcBTC`
+  - status: deployed specialist lane
+  - note: current deployed lane uses `USDC.e / wcBTC` and remains disabled by default
 
-## Oracle Candidates
+## Active Oracle References
 
-### Preferred first provider
-
-- `RedStone`
-
-Citrea docs list the following RedStone mainnet feeds:
-
-- `BTC/USD`
 - `USDC/USD`
-- `USDT/USD`
-- `aUSD/USD`
+- `BTC/USD`
+- frozen heartbeat: `21600`
 
-As of April 8, 2026, no `ctUSD/USD` feed is listed on the official Citrea oracle page reviewed for
-this repo pass.
+## Current Repo Rule
 
-## Onboarding Candidates
+The live Citrea deployment is already complete and frozen.
 
-### Stablecoin onboarding
+This directory should describe:
 
-- `Bridge Hub`
-- `MoonPay`
+- the deployed `JuiceSwap` lane that exists now
+- the fixed constants needed to operate or review it
 
-### BTC onboarding
-
-- `Clementine`
-- `Garden`
-
-## Recommended First Deployment
-
-- product: `HLX-ctUSD Base`
-- asset: `ctUSD`
-- strategy: none on day one
-- external venue dependency: none on day one
-
-## Recommended First Live Candidate
-
-- product direction: `USDC.e / wcBTC`
-- venue: `JuiceSwap`
-- approved fee tier: `3000`
-- posture: strategy deployment allowed, productive allocation disabled by default
-
-## Deployment Checklist
-
-1. confirm chain metadata and RPC provider choice
-2. confirm owner and guardian addresses
-3. confirm `ctUSD` token metadata and decimals handling
-4. deploy core contracts to Citrea
-5. create `HLX-ctUSD Base`
-6. set conservative initial `depositCap`
-7. set `maxAllocationBps = 0` if no strategy is attached
-8. publish addresses and runbooks in deployment notes
-9. keep venue integration deferred until diligence gates are passed
+It should not preserve superseded `ctUSD` base-vault release plans.
 
 ## Sources
 

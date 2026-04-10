@@ -42,4 +42,8 @@ interface IJuiceSwapPool {
             uint32 secondsOutside,
             bool initialized
         );
+
+    function observe(
+        uint32[] calldata secondsAgos
+    ) external view returns (int56[] memory tickCumulatives, uint160[] memory);
 }

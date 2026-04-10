@@ -80,6 +80,12 @@ contract MockJuiceSwapFactory is IJuiceSwapFactory {
 }
 
 contract MockJuiceSwapPool is IJuiceSwapPool {
+    struct Observation {
+        uint32 timestamp;
+        int56 tickCumulative;
+        int24 tick;
+    }
+
     struct TickInfo {
         uint128 liquidityGross;
         int128 liquidityNet;
@@ -104,6 +110,7 @@ contract MockJuiceSwapPool is IJuiceSwapPool {
     uint128 private _liquidity;
 
     mapping(int24 tick => TickInfo info) private _ticks;
+    Observation[] private _observations;
 
     constructor(
         address factory_,
@@ -121,6 +128,9 @@ contract MockJuiceSwapPool is IJuiceSwapPool {
         tickSpacing = tickSpacing_;
         _sqrtPriceX96 = sqrtPriceX96_;
         _tick = tick_;
+        _observations.push(
+            Observation({ timestamp: uint32(block.timestamp), tickCumulative: 0, tick: tick_ })
+        );
     }
 
     function feeGrowthGlobal0X128() external view returns (uint256) {
@@ -144,7 +154,15 @@ contract MockJuiceSwapPool is IJuiceSwapPool {
             bool unlocked
         )
     {
-        return (_sqrtPriceX96, _tick, 0, 0, 0, 0, true);
+        return (
+            _sqrtPriceX96,
+            _tick,
+            uint16(_observations.length - 1),
+            uint16(_observations.length),
+            uint16(_observations.length),
+            0,
+            true
+        );
     }
 
     function ticks(
@@ -180,8 +198,27 @@ contract MockJuiceSwapPool is IJuiceSwapPool {
         uint160 newSqrtPriceX96,
         int24 newTick
     ) external {
+        _pushObservation(newTick);
         _sqrtPriceX96 = newSqrtPriceX96;
         _tick = newTick;
+    }
+
+    function observe(
+        uint32[] calldata secondsAgos
+    )
+        external
+        view
+        returns (
+            int56[] memory tickCumulatives,
+            uint160[] memory secondsPerLiquidityCumulativeX128s
+        )
+    {
+        tickCumulatives = new int56[](secondsAgos.length);
+        secondsPerLiquidityCumulativeX128s = new uint160[](secondsAgos.length);
+
+        for (uint256 i = 0; i < secondsAgos.length; ++i) {
+            tickCumulatives[i] = _tickCumulativeAt(uint32(block.timestamp) - secondsAgos[i]);
+        }
     }
 
     function registerLiquidity(
@@ -249,6 +286,45 @@ contract MockJuiceSwapPool is IJuiceSwapPool {
             info.feeGrowthOutside1X128 = _feeGrowthGlobal1X128;
         }
         info.initialized = true;
+    }
+
+    function _pushObservation(
+        int24 newTick
+    ) internal {
+        Observation memory last = _observations[_observations.length - 1];
+        uint32 timestamp = uint32(block.timestamp);
+        int56 tickCumulative = last.tickCumulative + int56(int256(last.tick))
+            * int56(uint56(timestamp - last.timestamp));
+
+        if (last.timestamp == timestamp) {
+            last.tickCumulative = tickCumulative;
+            last.tick = newTick;
+            _observations[_observations.length - 1] = last;
+            return;
+        }
+
+        _observations.push(
+            Observation({ timestamp: timestamp, tickCumulative: tickCumulative, tick: newTick })
+        );
+    }
+
+    function _tickCumulativeAt(
+        uint32 targetTimestamp
+    ) internal view returns (int56 tickCumulative) {
+        Observation memory first = _observations[0];
+        require(targetTimestamp >= first.timestamp, "OLD");
+
+        Observation memory observation = first;
+        for (uint256 i = _observations.length; i > 0; --i) {
+            Observation memory candidate = _observations[i - 1];
+            if (candidate.timestamp <= targetTimestamp) {
+                observation = candidate;
+                break;
+            }
+        }
+
+        tickCumulative = observation.tickCumulative + int56(int256(observation.tick))
+            * int56(uint56(targetTimestamp - observation.timestamp));
     }
 }
 

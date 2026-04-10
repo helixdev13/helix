@@ -138,6 +138,38 @@ contract JuiceSwapManagedClIntegrationTest is Test {
         assertTrue(vault.withdrawOnly());
     }
 
+    function testEmergencyPauseFullyUnwindsWhenBaseOracleIsStale() public {
+        _deployAndAllocatePosition(25_000e6, 20_000e6);
+        _setBaseOracleStale();
+
+        vm.prank(GUARDIAN);
+        vault.emergencyPause();
+
+        assertEq(adapter.positionTokenId(), 0);
+        assertFalse(adapter.positionState().active);
+        assertEq(vault.totalStrategyAssets(), 0);
+        assertEq(vault.totalIdle(), vault.totalAssets());
+        assertTrue(vault.withdrawOnly());
+
+        vm.prank(ALICE);
+        vault.withdraw(10_000e6, ALICE, ALICE);
+        assertEq(ctusd.balanceOf(ALICE), 65_000e6);
+    }
+
+    function testEmergencyPauseFullyUnwindsWhenPairOracleIsMissing() public {
+        _deployAndAllocatePosition(25_000e6, 20_000e6);
+        _clearOracle(address(wcbtc));
+
+        vm.prank(GUARDIAN);
+        vault.emergencyPause();
+
+        assertEq(adapter.positionTokenId(), 0);
+        assertFalse(adapter.positionState().active);
+        assertEq(vault.totalStrategyAssets(), 0);
+        assertEq(vault.totalIdle(), vault.totalAssets());
+        assertTrue(vault.withdrawOnly());
+    }
+
     function _intent(
         uint256 assetsToDeploy,
         uint256 assetsToWithdraw,
@@ -160,5 +192,33 @@ contract JuiceSwapManagedClIntegrationTest is Test {
         return Types.ExecutionLimits({
             minAssetsOut: minAssetsOut, maxLoss: maxLoss, deadline: uint64(block.timestamp + 1 days)
         });
+    }
+
+    function _deployAndAllocatePosition(
+        uint256 depositAmount,
+        uint256 allocationAmount
+    ) internal {
+        vm.prank(ALICE);
+        vault.deposit(depositAmount, ALICE);
+
+        vault.allocateToStrategy(allocationAmount);
+
+        Types.RebalanceIntent memory intent = _intent(allocationAmount, 0, 1_000_000_000_000);
+        vm.prank(STRATEGIST);
+        strategy.rebalance(intent, strategy.previewRebalance(intent), _limits(0, 10_000e6));
+    }
+
+    function _setBaseOracleStale() internal {
+        vm.warp(block.timestamp + 1 days + 2);
+        wcbtcOracle.setPrice(WCBTC_PRICE);
+        uint48 staleAt = uint48(block.timestamp - 1 days - 1);
+        ctusdOracle.setPriceWithTimestamp(1e18, staleAt);
+    }
+
+    function _clearOracle(
+        address asset
+    ) internal {
+        bytes32 configSlot = keccak256(abi.encode(asset, uint256(2)));
+        vm.store(address(oracleRouter), configSlot, bytes32(0));
     }
 }

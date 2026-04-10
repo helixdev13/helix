@@ -71,4 +71,26 @@ library Types {
         uint256 adapterAssetsAfter;
         uint64 positionVersion;
     }
+
+    struct CompoundReport {
+        uint256 profit;
+        uint256 performanceFee;
+        uint256 treasuryFee;
+        uint256 hlxUserMint;
+        uint256 bountyMint;
+        uint256 reinvestAmount;
+        bool reinvested;
+    }
+
+    struct CompoundConfig {
+        uint16 performanceFeeBps;
+        uint16 rewardRatioBps;
+        uint16 bountyBps;
+        uint256 hlxMintRate;
+        uint256 minimumProfitThreshold;
+        uint256 compoundCooldown;
+        address feeRecipient;
+        address hlxToken;
+        address rewardDistributor;
+    }
 }
