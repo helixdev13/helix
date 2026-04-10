@@ -7,6 +7,7 @@ import { DeployCitreaCore } from "../script/DeployCitreaCore.s.sol";
 import { DeployCitreaUsdcBase } from "../script/DeployCitreaUsdcBase.s.sol";
 import { TransferCitreaUsdcBaseOwnership } from "../script/TransferCitreaUsdcBaseOwnership.s.sol";
 import { AcceptCitreaUsdcBaseOwnership } from "../script/AcceptCitreaUsdcBaseOwnership.s.sol";
+import { VerifyCitreaUsdcBasePostDeploy } from "../script/VerifyCitreaUsdcBasePostDeploy.s.sol";
 import { HelixVault } from "../src/HelixVault.sol";
 import { RiskEngine } from "../src/core/RiskEngine.sol";
 import { VaultFactory } from "../src/core/VaultFactory.sol";
@@ -82,5 +83,8 @@ contract CitreaUsdcBaseScriptsTest is Test {
         assertEq(riskEngine.getMaxAllocationBps(address(vault)), 0);
         assertFalse(riskEngine.isPaused(address(vault)));
         assertFalse(riskEngine.isWithdrawOnly(address(vault)));
+
+        VerifyCitreaUsdcBasePostDeploy verify = new VerifyCitreaUsdcBasePostDeploy();
+        verify.run();
     }
 }

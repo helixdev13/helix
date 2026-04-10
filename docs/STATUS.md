@@ -58,6 +58,7 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 - auto-compound ownership handoff has been completed
 - USDC.e base-vault ownership handoff scripts have been added
 - USDC.e base-vault rehearsal harness has been added
+- USDC.e base-vault post-deploy verification script has been added
 - venue-specific non-CL adapter work has not started
 - the frozen live `JuiceSwap` path remains untouched
 - the deployed auto-compound stack is the current product-facing deployed lane
@@ -89,6 +90,7 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 - [DeployCitreaUsdcBase.s.sol](../contracts/script/DeployCitreaUsdcBase.s.sol)
 - [TransferCitreaUsdcBaseOwnership.s.sol](../contracts/script/TransferCitreaUsdcBaseOwnership.s.sol)
 - [AcceptCitreaUsdcBaseOwnership.s.sol](../contracts/script/AcceptCitreaUsdcBaseOwnership.s.sol)
+- [VerifyCitreaUsdcBasePostDeploy.s.sol](../contracts/script/VerifyCitreaUsdcBasePostDeploy.s.sol)
 - [CitreaUsdcBaseScripts.t.sol](../contracts/test/CitreaUsdcBaseScripts.t.sol)
 - [HelixLens.sol](../contracts/src/periphery/HelixLens.sol)
 - [AutoCompoundClStrategy.sol](../contracts/src/strategies/AutoCompoundClStrategy.sol)
