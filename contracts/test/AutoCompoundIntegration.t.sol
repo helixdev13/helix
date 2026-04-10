@@ -13,6 +13,7 @@ import { RewardDistributor } from "../src/periphery/RewardDistributor.sol";
 import { HLXToken, MINTER_ROLE } from "../src/token/HLXToken.sol";
 import { MockERC20 } from "../src/mocks/MockERC20.sol";
 import { MockOracle } from "../src/mocks/MockOracle.sol";
+import { Errors } from "../src/libraries/Errors.sol";
 import { Types } from "../src/libraries/Types.sol";
 
 contract AutoCompoundIntegrationTest is Test {
@@ -20,6 +21,10 @@ contract AutoCompoundIntegrationTest is Test {
     uint256 internal constant DEPOSIT_AMOUNT = 1_000e6;
     uint256 internal constant DEPLOY_AMOUNT = 600e6;
     uint256 internal constant PROFIT_AMOUNT = 100e6;
+    uint256 internal constant SMALL_DEPOSIT_AMOUNT = 100e6;
+    uint256 internal constant SMALL_DEPLOY_AMOUNT = 80e6;
+    uint256 internal constant SMALL_REBALANCE_AMOUNT = 60e6;
+    uint256 internal constant LOW_PROFIT_AMOUNT = 1e5;
     uint256 internal constant REWARD_AMOUNT = 7 days * 1e18;
     uint256 internal constant HLX_MINT_RATE = 1e30;
     uint256 internal constant INITIAL_USER_BALANCE = 10_000e6;
@@ -44,7 +49,7 @@ contract AutoCompoundIntegrationTest is Test {
         uint256 shares = stack.vault.deposit(DEPOSIT_AMOUNT, ALICE);
 
         stack.vault.allocateToStrategy(DEPLOY_AMOUNT);
-        _rebalanceToAdapter(stack.strategy);
+        _rebalanceToAdapter(stack.strategy, DEPLOY_AMOUNT);
 
         assertEq(stack.vault.totalIdle(), DEPOSIT_AMOUNT - DEPLOY_AMOUNT);
         assertEq(stack.vault.totalStrategyAssets(), DEPLOY_AMOUNT);
@@ -114,8 +119,105 @@ contract AutoCompoundIntegrationTest is Test {
         assertEq(stack.asset.balanceOf(address(stack.adapter)), 0);
     }
 
+    function testCompoundRevertsWhenOracleStale() public {
+        Stack memory stack = _deployFullStack();
+
+        vm.warp(1);
+        stack.oracle.setPrice(1e18);
+
+        vm.prank(ALICE);
+        stack.vault.deposit(DEPOSIT_AMOUNT, ALICE);
+
+        stack.vault.allocateToStrategy(DEPLOY_AMOUNT);
+        _rebalanceToAdapter(stack.strategy, DEPLOY_AMOUNT);
+
+        stack.asset.mint(address(stack.adapter), PROFIT_AMOUNT);
+
+        vm.warp(1 days + 2);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.StalePrice.selector, address(stack.asset), 1, 1 days + 2, 1 days
+            )
+        );
+        vm.prank(ALICE);
+        stack.strategy.compound();
+    }
+
+    function testCompoundRevertsOnLowProfit() public {
+        Stack memory stack = _deployFullStack();
+
+        vm.warp(1);
+
+        vm.prank(ALICE);
+        stack.vault.deposit(DEPOSIT_AMOUNT, ALICE);
+
+        stack.vault.allocateToStrategy(DEPLOY_AMOUNT);
+        _rebalanceToAdapter(stack.strategy, DEPLOY_AMOUNT);
+
+        stack.asset.mint(address(stack.adapter), LOW_PROFIT_AMOUNT);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.InsufficientProfit.selector,
+                LOW_PROFIT_AMOUNT,
+                stack.strategy.minimumProfitThreshold()
+            )
+        );
+        vm.prank(ALICE);
+        stack.strategy.compound();
+    }
+
+    function testEmergencyUnwindDuringActivePosition() public {
+        Stack memory stack = _deployFullStack();
+
+        vm.warp(1);
+
+        vm.prank(ALICE);
+        uint256 shares = stack.vault.deposit(DEPOSIT_AMOUNT, ALICE);
+
+        stack.vault.allocateToStrategy(DEPLOY_AMOUNT);
+        _rebalanceToAdapter(stack.strategy, DEPLOY_AMOUNT);
+
+        stack.vault.emergencyPause();
+
+        assertTrue(stack.vault.withdrawOnly());
+        assertEq(stack.strategy.totalAssets(), 0);
+        assertEq(stack.vault.totalStrategyAssets(), 0);
+        assertEq(stack.vault.totalIdle(), DEPOSIT_AMOUNT);
+        assertEq(stack.asset.balanceOf(address(stack.adapter)), 0);
+
+        vm.prank(ALICE);
+        uint256 assetsOut = stack.vault.redeem(shares, ALICE, ALICE);
+
+        assertEq(assetsOut, DEPOSIT_AMOUNT);
+        assertEq(stack.asset.balanceOf(ALICE), INITIAL_USER_BALANCE);
+        assertEq(stack.vault.totalAssets(), 0);
+    }
+
+    function testWithdrawFailsWhenInsufficientLiquidity() public {
+        Stack memory stack = _deployFullStack();
+
+        vm.warp(1);
+
+        vm.prank(ALICE);
+        stack.vault.deposit(SMALL_DEPOSIT_AMOUNT, ALICE);
+
+        stack.vault.allocateToStrategy(SMALL_DEPLOY_AMOUNT);
+        _rebalanceToAdapter(stack.strategy, SMALL_REBALANCE_AMOUNT);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.InsufficientLiquidAssets.selector, SMALL_REBALANCE_AMOUNT, 61e6
+            )
+        );
+        vm.prank(address(stack.vault));
+        stack.strategy.withdraw(81e6, address(stack.vault));
+    }
+
     struct Stack {
         MockERC20 asset;
+        MockOracle oracle;
         RiskEngine riskEngine;
         OracleRouter oracleRouter;
         VaultFactory vaultFactory;
@@ -130,8 +232,8 @@ contract AutoCompoundIntegrationTest is Test {
         stack.asset = new MockERC20("Mock USDC.e", "USDC.e", 6);
         stack.riskEngine = new RiskEngine(address(this));
         stack.oracleRouter = new OracleRouter(address(this));
-        MockOracle oracle = new MockOracle(address(this), 1e18);
-        stack.oracleRouter.setOracle(address(stack.asset), address(oracle), 1 days);
+        stack.oracle = new MockOracle(address(this), 1e18);
+        stack.oracleRouter.setOracle(address(stack.asset), address(stack.oracle), 1 days);
 
         stack.vaultFactory = new VaultFactory(stack.riskEngine, address(this));
         stack.vault =
@@ -165,13 +267,14 @@ contract AutoCompoundIntegrationTest is Test {
     }
 
     function _rebalanceToAdapter(
-        AutoCompoundClStrategy strategy
+        AutoCompoundClStrategy strategy,
+        uint256 assetsToDeploy
     ) internal {
         Types.RebalanceIntent memory intent = Types.RebalanceIntent({
             targetLowerTick: -120,
             targetUpperTick: 120,
             targetLiquidity: 1000,
-            assetsToDeploy: DEPLOY_AMOUNT,
+            assetsToDeploy: assetsToDeploy,
             assetsToWithdraw: 0,
             deadline: uint64(block.timestamp + 1 days)
         });
