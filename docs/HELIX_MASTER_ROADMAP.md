@@ -80,14 +80,9 @@ That flagship should be:
 - Phase 3 deterministic mock multi-adapter routing has started and is test-backed
 - final generic allocator hardening review is clean; venue-approval recheck has now returned no-build
 - April 10, 2026 narrow fallback screen is complete: no non-CL venue beyond blocked Zentra clears a build-now decision
-- idle/base-vault-first shell is now the active buildable fallback path
-- `HelixLens` has a product-facing allocator read surface for idle-only shell status
-- v2 `HLX-USDC.e` idle-shell deployment scaffold exists separately from the frozen JuiceSwap config
-- no-broadcast v2 idle-shell readiness rehearsal exists for deployment prechecks
-- v2 idle-shell ownership transfer/acceptance scripts exist separately from the frozen JuiceSwap ownership scripts
-- v2 idle-shell post-deploy verification script exists for final owner / disabled posture checks
-- v2 idle-shell operator runbook exists for ordered rehearsal / future deployment flow
-- v2 idle-shell script lifecycle has local simulation coverage
+- v2 auto-compound deployment scaffold now exists separately from the frozen JuiceSwap config
+- `HelixLens` has a product-facing allocator read surface for the current stack
+- auto-compound ownership handoff and post-deploy verification scripts are still pending
 - venue-specific non-CL adapter work has not started
 - current first venue target remains `Zentra`
 - current venue decision state remains `no-build-yet`
@@ -258,18 +253,9 @@ Do not reorder this.
 
 The immediate engineering mission is:
 
-- harden the idle/base-vault-first smart-vault shell product surface
-
-Specifically:
-
-- the April 10, 2026 venue/fallback recheck did not clear any non-CL venue for adapter coding
+- harden the auto-compound smart-vault deployment surface
+- keep the new Citrea deployment path disabled by default until the same-day checks pass
 - keep any next implementation venue-agnostic unless a venue later clears the documented approval gates
-- scope current work to the idle/base-vault-first shell and allocator product surface
-- use `HelixLens` as the current read surface for idle-only / zero-adapter allocator status
-- keep the v2 shell deployment scaffold dry-run only until explicitly approved for broadcast
-- run the no-broadcast readiness check before any future v2 idle-shell deployment discussion
-- keep v2 idle-shell ownership handoff separate and zero-adapter-gated
-- require v2 idle-shell post-deploy verification before any follow-up shell operation
 - preserve the already-hardened strategy/adapter boundary
 - keep the frozen Citrea `JuiceSwap` deployment untouched
 
@@ -306,13 +292,10 @@ If that bar is not met, venue-specific coding is premature.
 - [JUICESWAP_ORACLE_FREEZE.md](./JUICESWAP_ORACLE_FREEZE.md)
 - [config/citrea/juiceswap_usdce_wcbtc_candidate.md](../config/citrea/juiceswap_usdce_wcbtc_candidate.md)
 
-### v2 product and build direction
+### v2 deployment surface
 
-- [HELIX_V2_EXEC_SUMMARY.md](./HELIX_V2_EXEC_SUMMARY.md)
-- [HELIX_V2_DECISION.md](./HELIX_V2_DECISION.md)
-- [HELIX_V2_CONTRACT_PLAN.md](./HELIX_V2_CONTRACT_PLAN.md)
-- [HELIX_V2_ALLOCATOR_REVIEW.md](./HELIX_V2_ALLOCATOR_REVIEW.md)
-- [HELIX_V2_FALLBACK_SCREEN.md](./HELIX_V2_FALLBACK_SCREEN.md)
-- [HELIX_V2_IDLE_BASE_VAULT_SHELL.md](./HELIX_V2_IDLE_BASE_VAULT_SHELL.md)
-- [HELIX_V2_IDLE_SHELL_RUNBOOK.md](./HELIX_V2_IDLE_SHELL_RUNBOOK.md)
-- [config/citrea/hlx_usdce_idle_shell_v2.md](../config/citrea/hlx_usdce_idle_shell_v2.md)
+- [DeployCitreaAutoCompoundVault.s.sol](../contracts/script/DeployCitreaAutoCompoundVault.s.sol)
+- [HelixLens.sol](../contracts/src/periphery/HelixLens.sol)
+- [AutoCompoundClStrategy.sol](../contracts/src/strategies/AutoCompoundClStrategy.sol)
+- [RewardDistributor.sol](../contracts/src/periphery/RewardDistributor.sol)
+- [JuiceSwapClAdapter.sol](../contracts/src/adapters/JuiceSwapClAdapter.sol)

@@ -52,6 +52,7 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 ## Current Build Status
 
 - allocator foundation exists in code
+- auto-compound Citrea deployment scaffold exists in code
 - venue-specific non-CL adapter work has not started
 - the frozen live `JuiceSwap` path remains the only deployed lane
 
@@ -71,7 +72,8 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 - [CITREA_MAINNET_PREREQUISITES.md](./CITREA_MAINNET_PREREQUISITES.md)
 - [config/citrea/juiceswap_usdce_wcbtc_candidate.md](../config/citrea/juiceswap_usdce_wcbtc_candidate.md)
 - [HELIX_MASTER_ROADMAP.md](./HELIX_MASTER_ROADMAP.md)
-- [HELIX_V2_EXEC_SUMMARY.md](./HELIX_V2_EXEC_SUMMARY.md)
-- [HELIX_V2_DECISION.md](./HELIX_V2_DECISION.md)
-- [HELIX_V2_CONTRACT_PLAN.md](./HELIX_V2_CONTRACT_PLAN.md)
-- [HELIX_V2_ALLOCATOR_REVIEW.md](./HELIX_V2_ALLOCATOR_REVIEW.md)
+- [DeployCitreaAutoCompoundVault.s.sol](../contracts/script/DeployCitreaAutoCompoundVault.s.sol)
+- [HelixLens.sol](../contracts/src/periphery/HelixLens.sol)
+- [AutoCompoundClStrategy.sol](../contracts/src/strategies/AutoCompoundClStrategy.sol)
+- [RewardDistributor.sol](../contracts/src/periphery/RewardDistributor.sol)
+- [JuiceSwapClAdapter.sol](../contracts/src/adapters/JuiceSwapClAdapter.sol)
