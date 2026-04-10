@@ -54,11 +54,11 @@ That flagship should be:
 
 - single-asset
 - stable-denominated
-- allocator-based
+- auto-compound-based
 - supply-only at first
 - idle-fallback capable
-- venue-agnostic at the strategy layer
-- venue-specific only at the adapter layer
+- PancakeBunny-style in product shape
+- venue-specific only where a later lane truly needs it
 
 ## Current State
 
@@ -74,24 +74,16 @@ That flagship should be:
 
 ### v2 state
 
-- generic allocator foundation exists in code
-- Phase 1 allocator hardening is complete enough to move to Phase 2
-- Phase 2 read surfaces, policy visibility, and allocator observability are in place
-- Phase 3 deterministic mock multi-adapter routing has started and is test-backed
-- final generic allocator hardening review is clean; venue-approval recheck has now returned no-build
-- April 10, 2026 narrow fallback screen is complete: no non-CL venue beyond blocked Zentra clears a build-now decision
-- v2 auto-compound deployment has been executed onchain and ownership acceptance is complete
-- `HelixLens` has a product-facing allocator read surface for the current stack
+- deployed auto-compound stack exists onchain and ownership acceptance is complete
+- `HelixLens` has product-facing vault and compound-strategy read surfaces for the current stack
 - auto-compound deployment, transfer, and acceptance scripts now exist
 - USDC.e base-vault ownership handoff scripts now exist
 - USDC.e base-vault rehearsal harness now exists
 - USDC.e base-vault post-deploy verification script now exists
-- USDC.e allocator-shell deployment, transfer, acceptance, and verification scripts now exist
-- USDC.e allocator-shell rehearsal harness now exists
 - post-deploy read-only verification is complete
+- the deployed auto-compound stack is the current product-facing deployed lane
 - venue-specific non-CL adapter work has not started
-- current first venue target remains `Zentra`
-- current venue decision state remains `no-build-yet`
+- frozen live lane remains untouched
 
 ## Strategic End State
 
@@ -99,7 +91,7 @@ The target end state is a broader Helix product suite on Citrea with:
 
 - smart single-asset vaults as the core identity
 - CL as one specialist lane
-- later maximizer-style or second-order optimizer products only after the core allocator lane is stable
+- later maximizer-style or second-order optimizer products only after the core auto-compound lane is stable
 
 ## Phase Map
 
@@ -113,150 +105,87 @@ Success condition:
 
 - no accidental semantic drift or config drift in the current live lane
 
-### Phase 1. Harden the generic allocator foundation
+### Phase 1. Stabilize the auto-compound core
 
 Primary code surface:
 
-- `AllocatorTypes`
-- `IAllocatorAdapter`
-- `ManagedAllocatorStrategy`
-- `MockAllocatorAdapter`
-- allocator tests
+- `AutoCompoundClStrategy`
+- `RewardDistributor`
+- `HelixLens` compound view
+- auto-compound tests
 
 Objective:
 
-- make the allocator core reusable, venue-agnostic, and test-backed
-
-Current status:
-
-- implemented and test-backed
+- keep the deployed auto-compound stack deterministic, correctly owned, and disabled by default
 
 Required themes:
 
-- correctness hardening
-- conservative accounting
-- explicit health/liveness surfaces
+- compounding correctness
+- fee math and HLX minting
+- conservative accounting for compound rewards
 - operator-observable events and errors
-- no venue-specific assumptions in the strategy layer
 
 Exit condition:
 
-- no major correctness, accounting, interface, or missing-test gaps remain
+- no major correctness or missing-test gaps remain in the auto-compound core
 
-### Phase 2. Production-shape the allocator lane
+### Phase 2. Productize the flagship smart vault
 
 Objective:
 
-- bring the allocator lane closer to the maturity of the CL lane without making a venue commitment
+- turn the deployed auto-compound lane into the flagship `HLX-USDC.e Smart Vault`
 
 Required work:
 
-- richer reporting/state surfaces: implemented for policy state, allocation capacity, adapter
-  summaries, and allocator state rollups
-- clear live vs conservative valuation separation
-- idle floor / liquidity reserve logic
-- degraded vs blocked handling
-- stronger policy hooks
-- better multi-adapter readiness: started through deterministic registration-order routing,
-  health-aware withdrawal ordering, and mixed-health allocator tests
+- base-vault / shell deployment flow
+- disabled-by-default launch posture
+- ownership handoff and verification
+- read surfaces and operator docs
+- launch-checklist compliance
 
 Exit condition:
 
-- a real venue adapter can later plug in without redesigning the strategy boundary
+- a stable product-facing `HLX-USDC.e Smart Vault` lane can be introduced without touching the frozen live lane
 
-### Phase 3. Multi-adapter readiness
+### Phase 3. Expand the auto-compound vault family
 
 Objective:
 
-- make the allocator base safely extensible beyond one adapter without turning it into a router product
+- add more PancakeBunny-style vault breadth on Citrea
 
 Required work:
 
-- deterministic adapter registry behavior: implemented through stable registration order and
-  health-bucket iteration
-- health-aware deallocation ordering: implemented for healthy-before-degraded, blocked-skipped
-  routing
-- aggregate state correctness across mixed adapter health: covered in allocator tests
-- repeated-cycle robustness: covered in allocator tests
-
-Exit condition:
-
-- mock multi-adapter tests prove stable accounting and predictable routing: in progress and
-  currently covered for planning, user withdrawal, strategist deallocation, mixed health, blocked
-  shortfall, and repeated cycles
-
-### Phase 4. Venue approval recheck
-
-This phase is not coding-first.
-
-A real allocator adapter may start only if a venue clears all of:
-
-- supply-side surface clarity
-- acceptable withdrawal/liveness quality
-- acceptable oracle assumptions
-- legible admin / upgrade surface
-- acceptable same-day onchain launch posture
-
-Current state:
-
-- `Zentra = screened but blocked`
-- `Morpho = watchlist only; current Citrea surface is too small / opaque`
-- no fallback non-CL venue currently clears build-now
-- no real adapter should start yet
-
-If Helix continues building before a venue clears, the active buildable direction is an idle/base-vault-first smart-vault shell, not a venue adapter.
-
-### Phase 5. First real allocator adapter
-
-Starts only if Phase 4 clears.
-
-Likely candidate order:
-
-1. `Zentra` if conditions materially improve
-2. `Morpho` only if its Citrea surface later becomes legible enough
-
-Adapter rule:
-
-- venue mechanics stay in the adapter
-- portfolio policy stays in `ManagedAllocatorStrategy`
-
-### Phase 6. First flagship product integration
-
-Objective:
-
-- launch the first real Helix v2 flagship lane on top of the mature allocator foundation and an approved adapter
-
-Launch target:
-
-- `HLX-USDC.e Smart Vault`
-
-Launch constraints:
-
-- supply-only
-- one venue
-- hard cap
-- low allocation posture
-- idle fallback
-- validated emergency unwind
+- later asset expansion
+- later compound strategies
+- CL remains the specialist lane
 - no leverage
 - no reflexive tokenomics
 
-### Phase 7. Later strategy families
+Exit condition:
 
-Only after the flagship allocator lane is stable:
+- a second auto-compound vault lane can be added without reworking the core stack
 
-- treat CL as a specialist strategy lane
-- consider maximizer-style products later
-- consider later assets such as `ctUSD` and `wcBTC`
+### Phase 4. Later specialist lanes
+
+Objective:
+
+- keep CL and later products separate from the core auto-compound identity
+
+Required work:
+
+- keep CL as a specialist strategy lane
+- consider later maximizer-style products only after core lane stability
+
+Exit condition:
+
+- product breadth grows without diluting the smart-vault identity
 
 ## Exact Engineering Order
 
-1. Harden the allocator foundation.
-2. Expand allocator reporting, policy, and liveness surfaces.
-3. Complete multi-adapter generic readiness.
-4. Recheck venue approval.
-5. Build a real adapter only if approved.
-6. Integrate the first flagship smart vault.
+1. Stabilize the auto-compound core.
+2. Productize the flagship smart vault.
+3. Expand the auto-compound vault family.
+4. Keep specialist lanes separate.
 
 Do not reorder this.
 
@@ -266,33 +195,29 @@ The immediate engineering mission is:
 
 - keep both deployed Citrea stacks disabled by default unless a deliberate enablement review is requested
 - keep the frozen `JuiceSwap` deployment untouched
-- continue expanding the generic allocator-based smart-vault lane
+- continue expanding the PancakeBunny-style auto-compound smart-vault lane
 - use `HELIX_V2_LAUNCH_CHECKLIST.md` as the launch gate for any future v2 rollout
-- keep any next implementation venue-agnostic unless a venue later clears the documented approval gates
-- preserve the already-hardened strategy/adapter boundary
+- preserve the already-hardened vault/strategy boundary
+- do not reintroduce the deleted generic branch
 
 Do not start:
 
-- a real `Zentra` adapter
-- a real `Morpho` adapter
 - productive-enable work on the frozen live lane
 - any redesign of the frozen `JuiceSwap` deployment path
 
-## Definition Of Done For The Allocator Foundation
+## Definition Of Done For The Auto-Compound Core
 
-The generic allocator lane is ready for venue-specific integration only when:
+The deployed auto-compound lane is ready for further product expansion only when:
 
-- strategy and adapter boundaries are stable
-- accounting states are explicit
-- live vs conservative valuation are clearly separated
-- blocked / degraded / healthy states are enforced and tested
-- emergency unwind is defined and tested
-- idle fallback works
-- cap and liquidity policies work
-- multi-adapter readiness is proven in mocks
-- the strategy no longer relies on venue-specific assumptions
+- vault and strategy boundaries are stable
+- compounding math and accounting are explicit
+- live vs conservative reporting is clearly separated
+- disabled-by-default and ownership-finalized behavior is tested
+- harvest and emergency unwind paths are defined and tested
+- operator read surfaces are stable
+- the core lane no longer relies on venue-specific assumptions
 
-If that bar is not met, venue-specific coding is premature.
+If that bar is not met, broader product expansion is premature.
 
 ## Source-Of-Truth Links
 
@@ -307,11 +232,6 @@ If that bar is not met, venue-specific coding is premature.
 
 ### v2 deployment surface
 
-- [AllocatorTypes.sol](../contracts/src/libraries/AllocatorTypes.sol)
-- [IAllocatorAdapter.sol](../contracts/src/interfaces/IAllocatorAdapter.sol)
-- [ManagedAllocatorStrategy.sol](../contracts/src/strategies/ManagedAllocatorStrategy.sol)
-- [MockAllocatorAdapter.sol](../contracts/src/adapters/MockAllocatorAdapter.sol)
-- [ManagedAllocatorStrategy.t.sol](../contracts/test/ManagedAllocatorStrategy.t.sol)
 - [DeployCitreaAutoCompoundVault.s.sol](../contracts/script/DeployCitreaAutoCompoundVault.s.sol)
 - [TransferCitreaAutoCompoundVaultOwnership.s.sol](../contracts/script/TransferCitreaAutoCompoundVaultOwnership.s.sol)
 - [AcceptCitreaAutoCompoundVaultOwnership.s.sol](../contracts/script/AcceptCitreaAutoCompoundVaultOwnership.s.sol)

@@ -6,8 +6,8 @@ Helix is in:
 
 - frozen live deployment maintenance
 - deployed auto-compound stack maintenance
-- v2 allocator-foundation development
-- venue-agnostic flagship build planning
+- PancakeBunny-style auto-compound product development
+- flagship smart-vault build planning
 
 The frozen live Citrea deployment exists already, and the deployed auto-compound stack is now live but disabled by default.
 
@@ -46,31 +46,26 @@ Helix v2 is now defined as:
 - a Citrea-native yield optimizer / aggregator
 - flagship first product: `HLX-USDC.e Smart Vault`
 - deployed flagship CL lane: auto-compound `USDC.e / wcBTC`
-- strategy family in progress: generic allocator lane
-- first non-CL venue work: blocked until venue approval clears
+- strategy family in progress: auto-compound smart vaults
+- later CL work remains a specialist lane
 
 The current deployed `JuiceSwap` stack remains untouched while this work proceeds.
 
 ## Current Build Status
 
-- allocator foundation implemented and test-backed
 - auto-compound Citrea deployment has been executed onchain
 - auto-compound ownership handoff has been completed
 - USDC.e base-vault ownership handoff scripts have been added
 - USDC.e base-vault rehearsal harness has been added
 - USDC.e base-vault post-deploy verification script has been added
-- USDC.e allocator-shell deployment, transfer, acceptance, and verification scripts have been added
-- USDC.e allocator-shell rehearsal harness has been added
-- venue-specific non-CL adapter work has not started
 - the frozen live `JuiceSwap` path remains untouched
 - the deployed auto-compound stack is the current product-facing deployed lane
 
 ## Immediate Next Engineering Focus
 
-- harden and extend the generic allocator foundation
+- harden and extend the auto-compound core
 - keep the deployed auto-compound stack disabled by default until any deliberate enablement review
-- preserve venue-agnostic strategy and adapter boundaries
-- do not start a real `Zentra` or other venue adapter until diligence clears
+- preserve the vault/strategy boundary
 - do not modify the frozen live deployment path as part of v2 work
 
 ## Current Source-Of-Truth Docs
@@ -83,12 +78,9 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 - [HELIX_V2_LAUNCH_CHECKLIST.md](./HELIX_V2_LAUNCH_CHECKLIST.md)
 - [config/citrea/juiceswap_usdce_wcbtc_candidate.md](../config/citrea/juiceswap_usdce_wcbtc_candidate.md)
 - [HELIX_MASTER_ROADMAP.md](./HELIX_MASTER_ROADMAP.md)
-- [AllocatorTypes.sol](../contracts/src/libraries/AllocatorTypes.sol)
-- [IAllocatorAdapter.sol](../contracts/src/interfaces/IAllocatorAdapter.sol)
-- [ManagedAllocatorStrategy.sol](../contracts/src/strategies/ManagedAllocatorStrategy.sol)
-- [MockAllocatorAdapter.sol](../contracts/src/adapters/MockAllocatorAdapter.sol)
-- [ManagedAllocatorStrategy.t.sol](../contracts/test/ManagedAllocatorStrategy.t.sol)
 - [DeployCitreaAutoCompoundVault.s.sol](../contracts/script/DeployCitreaAutoCompoundVault.s.sol)
+- [TransferCitreaAutoCompoundVaultOwnership.s.sol](../contracts/script/TransferCitreaAutoCompoundVaultOwnership.s.sol)
+- [AcceptCitreaAutoCompoundVaultOwnership.s.sol](../contracts/script/AcceptCitreaAutoCompoundVaultOwnership.s.sol)
 - [DeployCitreaUsdcBase.s.sol](../contracts/script/DeployCitreaUsdcBase.s.sol)
 - [TransferCitreaUsdcBaseOwnership.s.sol](../contracts/script/TransferCitreaUsdcBaseOwnership.s.sol)
 - [AcceptCitreaUsdcBaseOwnership.s.sol](../contracts/script/AcceptCitreaUsdcBaseOwnership.s.sol)
