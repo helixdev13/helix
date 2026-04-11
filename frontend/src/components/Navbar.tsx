@@ -76,7 +76,7 @@ export function Navbar() {
 
         <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center lg:justify-end">
           <div className="inline-flex h-8 items-center gap-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] px-3 text-sm text-[var(--text-secondary)]">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#42c3ff]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#42c3ff] shadow-[0_0_0_1px_rgba(66,195,255,0.18)] [animation:soft-pulse_3.5s_ease-in-out_infinite]" />
             Citrea
           </div>
           <ConnectWalletButton className="w-full min-w-0 sm:w-auto sm:min-w-[164px]" />

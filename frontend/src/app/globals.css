@@ -88,6 +88,17 @@ body {
   color-scheme: dark;
 }
 
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 0.95;
+  }
+
+  50% {
+    opacity: 0.72;
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;
