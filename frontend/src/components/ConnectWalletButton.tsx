@@ -117,11 +117,11 @@ export function ConnectWalletButton({ className = '' }: ConnectWalletButtonProps
 
       {!isConnected && isConnectorModalOpen ? (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 px-4"
           onClick={() => setIsConnectorModalOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
+            className="w-full max-w-sm rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 shadow-none"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="space-y-1">
@@ -133,7 +133,7 @@ export function ConnectWalletButton({ className = '' }: ConnectWalletButtonProps
                 <button
                   key={connector.uid}
                   type="button"
-                  className="flex w-full items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] px-4 py-3 text-left text-sm font-medium text-[var(--text-primary)] transition hover:bg-[#2a3040]"
+                  className="flex w-full items-center justify-between rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] px-4 py-3 text-left text-sm font-medium text-[var(--text-primary)] transition hover:bg-[#2a3040]"
                   onClick={() => {
                     setConnectingConnectorId(connector.uid);
                     connect({ connector });
@@ -153,7 +153,7 @@ export function ConnectWalletButton({ className = '' }: ConnectWalletButtonProps
 
       {isConnected && !isWrongChain && isAccountMenuOpen ? (
         <div className="absolute right-0 top-full z-[70] mt-3 w-full min-w-[260px] sm:w-[320px]">
-          <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 shadow-none">
             <div className="space-y-3">
               <div>
                 <div className="text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">Wallet</div>
@@ -167,7 +167,7 @@ export function ConnectWalletButton({ className = '' }: ConnectWalletButtonProps
               </div>
               <button
                 type="button"
-                className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] transition hover:bg-[#2a3040]"
+                className="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] transition hover:bg-[#2a3040]"
                 onClick={() => {
                   disconnect();
                   setIsAccountMenuOpen(false);

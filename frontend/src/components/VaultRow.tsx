@@ -3,12 +3,12 @@
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
-import { useAccount } from 'wagmi';
 import { parseUnits } from 'viem';
+import { useAccount } from 'wagmi';
 
+import { CONTRACTS } from '@/config/contracts';
 import { ConnectWalletButton } from '@/components/ConnectWalletButton';
 import { GradientButton } from '@/components/GradientButton';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -24,7 +24,6 @@ import {
   useVaultState,
   useWithdraw,
 } from '@/hooks';
-import { CONTRACTS } from '@/config/contracts';
 import { formatHlx, formatUsdce } from '@/lib/format';
 
 type UserRewardsState = ReturnType<typeof useUserRewards>;
@@ -46,30 +45,34 @@ function MetricCell({
   label,
   value,
   helper,
+  tone = 'default',
   isLoading = false,
 }: {
   label: string;
   value: string;
-  helper: string;
+  helper?: string;
+  tone?: 'default' | 'accent';
   isLoading?: boolean;
 }) {
   return (
     <div>
       <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--text-muted)]">{label}</div>
       {isLoading ? (
-        <Skeleton className="mt-2 h-5 w-24" />
+        <Skeleton className="mt-2 h-5 w-24 rounded-lg" />
       ) : (
-        <div className="mt-2 text-sm font-semibold text-[var(--text-primary)]">{value}</div>
+        <div className={['mt-2 text-sm font-semibold leading-tight', tone === 'accent' ? 'text-[#42c3ff]' : 'text-[var(--text-primary)]'].join(' ')}>
+          {value}
+        </div>
       )}
-      <div className="mt-1 text-xs text-[var(--text-secondary)]">{helper}</div>
+      {helper ? <div className="mt-1 text-xs text-[var(--text-secondary)]">{helper}</div> : null}
     </div>
   );
 }
 
 function ActionCard({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5 sm:p-6">
-      <div className="mb-4 space-y-1">
+    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 sm:p-5">
+      <div className="mb-3 space-y-1">
         <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
         <div className="text-xs leading-5 text-[var(--text-secondary)]">{description}</div>
       </div>
@@ -102,7 +105,7 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
     deposit.error ?? withdraw.error ?? stake.error ?? unstake.error ?? claimRewards.error;
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="grid gap-3 lg:grid-cols-2">
       <ActionCard title="Deposit & Withdraw" description="Approval happens automatically when needed.">
         <div className="space-y-4">
           <div className="space-y-2">
@@ -125,7 +128,7 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
               placeholder="0.00"
             />
             <GradientButton
-              className="w-full"
+              className="h-10 w-full"
               disabled={depositAmount <= 0n || deposit.isApproving || deposit.isDepositing}
               onClick={() => void deposit.deposit(depositAmount)}
             >
@@ -154,7 +157,7 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
             />
             <Button
               type="button"
-              className="w-full"
+              className="h-10 w-full"
               variant="outline"
               disabled={withdrawAmount <= 0n || withdraw.isWithdrawing}
               onClick={() => void withdraw.withdraw(withdrawAmount)}
@@ -187,7 +190,7 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
               placeholder="0.00"
             />
             <GradientButton
-              className="w-full"
+              className="h-10 w-full"
               disabled={stakeAmount <= 0n || stake.isApproving || stake.isStaking}
               onClick={() => void stake.stake(stakeAmount)}
             >
@@ -216,7 +219,7 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
             />
             <Button
               type="button"
-              className="w-full"
+              className="h-10 w-full"
               variant="outline"
               disabled={unstakeAmount <= 0n || unstake.isUnstaking}
               onClick={() => void unstake.unstake(unstakeAmount)}
@@ -225,11 +228,12 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
             </Button>
           </div>
 
-          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] p-5">
+          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] p-4">
             <div className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">Claim HLX</div>
             <div className="mt-2 text-sm text-[var(--text-secondary)]">Claim your accrued HLX rewards from compound fees.</div>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <GradientButton
+                className="h-10"
                 disabled={userRewards.earnedHlx <= 0n || claimRewards.isClaiming}
                 onClick={() => void claimRewards.claimRewards()}
               >
@@ -244,7 +248,7 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
       </ActionCard>
 
       <div className="lg:col-span-2">
-        <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-5 text-sm text-[var(--text-secondary)]">
+        <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-4 text-sm text-[var(--text-secondary)]">
           <span className="font-medium text-[var(--text-primary)]">Latest transaction:</span>{' '}
           {latestTxHash ? (
             <a
@@ -271,7 +275,7 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
 
 function ConnectPromptCard() {
   return (
-    <div className="rounded-xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-surface-2)] p-6 lg:col-span-2">
+    <div className="rounded-xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-surface-2)] p-5 lg:col-span-2">
       <div className="text-lg font-semibold text-[var(--text-primary)]">Connect to Deposit</div>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
         Connect your wallet to deposit, withdraw, stake, unstake, and claim HLX rewards.
@@ -303,12 +307,6 @@ export function VaultRow() {
   const harvestDisabled =
     strategyState.cooldownRemaining > 0n || isHarvesting || strategyState.rebalancePaused;
 
-  const statusLabel = vaultState.paused
-    ? 'Paused'
-    : vaultState.withdrawOnly
-      ? 'Withdraw Only'
-      : 'Active';
-
   return (
     <>
       <tr
@@ -321,70 +319,71 @@ export function VaultRow() {
             setExpanded((current) => !current);
           }
         }}
-        className="cursor-pointer border-t border-[var(--divider)] transition-colors hover:bg-[var(--bg-surface-2)]"
+        className="group cursor-pointer border-t border-[var(--divider)] transition-colors hover:bg-[rgba(255,255,255,0.02)]"
       >
         <td className="px-6 py-5 align-top">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ff4f96]/15 text-[#ff8ab9]">
-              <span className={[
-                'text-lg transition-transform duration-200',
-                expanded ? 'rotate-180' : 'rotate-0',
-              ].join(' ')}>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#ff4f96]/15 text-[#ff8ab9]">
+              <span className={[ 'text-lg transition-transform duration-200', expanded ? 'rotate-180' : 'rotate-0' ].join(' ')}>
                 ▾
               </span>
             </div>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-[#ff4f96]/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ff8ab9]">
+                <span className="rounded-full bg-[#ff4f96]/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ff8ab9]">
                   Auto
                 </span>
-                <span className="text-xs text-[var(--text-muted)]">Single Asset</span>
-                <Badge variant={vaultState.paused || vaultState.withdrawOnly ? 'secondary' : 'default'}>{statusLabel}</Badge>
+                <span className="text-[11px] text-[var(--text-muted)]">JuiceSwap on Citrea</span>
               </div>
-              <div className="mt-1 truncate text-base font-semibold text-[var(--text-primary)]">Helix USDC.e Vault</div>
-              <p className="mt-0.5 text-sm text-[var(--text-secondary)]">Single-asset smart vault on Citrea</p>
+              <div className="mt-1 text-[17px] font-semibold leading-tight text-[var(--text-primary)]">Helix USDC.e Vault</div>
             </div>
           </div>
         </td>
 
         <td className="px-4 py-5 align-top">
-          <MetricCell label="APY" value="—" helper="Pending live strategy performance" />
+          <MetricCell label="APY" value="—" tone="accent" />
         </td>
 
         <td className="px-4 py-5 align-top">
           <MetricCell
             label="Earn"
             value={`${formatHlx(userRewards.earnedHlx)} HLX`}
-            helper="Claimable rewards"
             isLoading={!mounted || userRewards.isLoading}
           />
+        </td>
+
+        <td className="px-4 py-5 align-top">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--text-muted)]">Platform</div>
+            <div className="mt-2 text-sm font-semibold text-[var(--text-primary)]">JuiceSwap</div>
+            <div className="mt-1 text-xs text-[var(--text-secondary)]">Citrea</div>
+          </div>
         </td>
 
         <td className="px-4 py-5 align-top">
           <MetricCell
             label="TVL"
             value={`${formatUsdce(vaultState.totalAssets)} USDC.e`}
-            helper="Vault assets"
             isLoading={vaultState.isLoading}
           />
         </td>
 
         <td className="px-6 py-5 align-top text-right">
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex items-center justify-end gap-2 opacity-90 transition-opacity group-hover:opacity-100">
             {connected ? (
               <GradientButton
-                className="h-10 px-4"
+                className="h-8 px-3 text-[12px] opacity-80 transition-opacity group-hover:opacity-100"
                 disabled={harvestDisabled}
                 onClick={(event) => {
                   event.stopPropagation();
                   void compound.compound();
                 }}
               >
-                {isHarvesting ? 'Harvesting...' : strategyState.cooldownRemaining > 0n ? 'Cooldown' : 'Harvest'}
+                {isHarvesting ? 'Harvesting...' : 'Harvest'}
               </GradientButton>
             ) : (
               <div onClick={(event) => event.stopPropagation()}>
-                <ConnectWalletButton className="w-full sm:w-auto sm:min-w-[170px]" />
+                <ConnectWalletButton className="w-full sm:w-auto sm:min-w-[132px]" />
               </div>
             )}
           </div>
@@ -393,7 +392,7 @@ export function VaultRow() {
 
       {expanded ? (
         <tr>
-          <td colSpan={5} className="border-t border-[var(--divider)] bg-[var(--bg-surface-2)] px-5 py-5 sm:px-6">
+          <td colSpan={6} className="border-t border-[var(--divider)] bg-[var(--bg-surface-2)] px-5 py-5 sm:px-6">
             <div onClick={(event) => event.stopPropagation()}>
               {connected ? <VaultExpandedSection userRewards={userRewards} /> : <ConnectPromptCard />}
             </div>

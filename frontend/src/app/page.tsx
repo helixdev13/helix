@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { CONTRACTS, TOKENS } from '@/config/contracts';
 import { VaultRow } from '@/components/VaultRow';
-import { formatBps, formatUsdce, truncateAddress } from '@/lib/format';
+import { formatUsdce, truncateAddress } from '@/lib/format';
 import { useVaultState } from '@/hooks';
 
 const CompoundPanel = dynamic(
@@ -70,19 +70,11 @@ export default function Home() {
     return () => document.removeEventListener('pointerdown', handlePointerDown);
   }, [sortOpen]);
 
-  const capRemaining =
-    vaultState.depositCap > vaultState.totalAssets
-      ? vaultState.depositCap - vaultState.totalAssets
-      : 0n;
   const statusLabel = vaultState.paused
     ? 'Paused'
     : vaultState.withdrawOnly
       ? 'Withdraw Only'
       : 'Active';
-  const strategyAllocation =
-    vaultState.totalAssets > 0n
-      ? formatBps(Number((vaultState.totalStrategyAssets * 10_000n) / vaultState.totalAssets))
-      : '0%';
   const searchNormalized = searchQuery.trim().toLowerCase();
   const vaultMatchesSearch =
     searchNormalized.length === 0 ||
@@ -95,7 +87,7 @@ export default function Home() {
       <div className="mx-auto w-full max-w-[1200px] px-6 py-8">
         {activeTab === 'vaults' ? (
           <div className="space-y-6">
-            <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-6 py-3">
+            <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-6 py-3.5">
               <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                 <div className="text-sm text-[var(--text-secondary)]">
                   Vault Status:{' '}
@@ -108,16 +100,6 @@ export default function Home() {
                       {formatUsdce(vaultState.totalAssets)} USDC.e
                     </span>
                   </div>
-                  <div className="text-sm text-[var(--text-secondary)]">
-                    Cap remaining{' '}
-                    <span className="font-semibold text-[var(--text-primary)]">
-                      {formatUsdce(capRemaining)} USDC.e
-                    </span>
-                  </div>
-                  <div className="text-sm text-[var(--text-secondary)]">
-                    Strategy{' '}
-                    <span className="font-semibold text-[var(--text-primary)]">{strategyAllocation}</span>
-                  </div>
                   <div className="flex items-center gap-2">
                     <div className="h-5 w-5 rounded-full bg-[#ff4f96]" />
                     <span className="text-sm font-semibold text-[var(--text-primary)]">—</span>
@@ -129,7 +111,7 @@ export default function Home() {
 
             <section className="space-y-4">
               <div>
-                <h2 className="text-2xl font-bold text-[#43c5ff]">Vaults</h2>
+                <h2 className="text-[23px] font-semibold tracking-tight text-[#43c5ff]">Vaults</h2>
               </div>
 
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -138,7 +120,7 @@ export default function Home() {
                     type="button"
                     onClick={() => setVaultFilter('all')}
                     className={[
-                      'rounded-lg px-4 py-2 text-sm font-semibold transition-colors',
+                      'rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-colors',
                       vaultFilter === 'all'
                         ? 'bg-[#ff4f96] text-white'
                         : 'bg-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
@@ -150,7 +132,7 @@ export default function Home() {
                     type="button"
                     onClick={() => setVaultFilter('single')}
                     className={[
-                      'rounded-lg px-4 py-2 text-sm font-semibold transition-colors',
+                      'rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-colors',
                       vaultFilter === 'single'
                         ? 'bg-[#ff4f96] text-white'
                         : 'bg-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
@@ -175,7 +157,7 @@ export default function Home() {
                   <div ref={sortRef} className="relative">
                     <button
                       type="button"
-                      className="flex h-11 items-center gap-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] px-4 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[#2a3040] hover:text-[var(--text-primary)]"
+                      className="flex h-10 items-center gap-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] px-4 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[#2a3040] hover:text-[var(--text-primary)]"
                       onClick={() => setSortOpen((current) => !current)}
                     >
                       {sortLabel}
@@ -211,10 +193,11 @@ export default function Home() {
                 <div className="overflow-x-auto">
                   <table className="min-w-[960px] w-full">
                     <thead>
-                      <tr className="bg-[var(--bg-surface-2)] text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
+                      <tr className="bg-[#3d434d] text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
                         <th className="px-6 py-3 text-left font-medium">Vault Name</th>
                         <th className="px-4 py-3 text-left font-medium">APY</th>
                         <th className="px-4 py-3 text-left font-medium">Earn</th>
+                        <th className="px-4 py-3 text-left font-medium">Platform</th>
                         <th className="px-4 py-3 text-left font-medium">TVL</th>
                         <th className="px-6 py-3 text-right font-medium" />
                       </tr>
@@ -224,7 +207,7 @@ export default function Home() {
                         <VaultRow />
                       ) : (
                         <tr>
-                          <td colSpan={5} className="px-6 py-12 text-center text-sm text-[var(--text-secondary)]">
+                          <td colSpan={6} className="px-6 py-12 text-center text-sm text-[var(--text-secondary)]">
                             No vaults match your search.
                           </td>
                         </tr>
@@ -239,8 +222,8 @@ export default function Home() {
           <CompoundPanel />
         )}
 
-        <footer className="mt-10 border-t border-[var(--divider)] pt-6 text-sm text-[var(--text-secondary)]">
-          <div className="text-[var(--text-primary)]">Built on Citrea</div>
+        <footer className="mt-8 border-t border-[var(--divider)] pt-5 text-xs text-[var(--text-muted)]">
+          <div className="text-sm text-[var(--text-secondary)]">Built on Citrea</div>
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
             <span>Vault {truncateAddress(CONTRACTS.helixVault)}</span>
             <span>Strategy {truncateAddress(CONTRACTS.strategy)}</span>

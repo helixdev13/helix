@@ -57,8 +57,8 @@ export function CompoundPanel() {
           <Badge
             className={[
               readyToCompound
-                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/25'
-                : 'bg-[#222936] text-[#ffcf66] border-[var(--border-subtle)]',
+                ? 'bg-[#ff4f96]/15 text-[#ff8ab9] border-[#ff4f96]/25'
+                : 'bg-[#222936] text-[var(--text-muted)] border-[var(--border-subtle)]',
               'border',
             ].join(' ')}
           >
@@ -201,8 +201,8 @@ export function CompoundPanel() {
                           <Badge
                             className={[
                               entry.reinvested
-                                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/25'
-                                : 'bg-[#222936] text-[#ffcf66] border-[var(--border-subtle)]',
+                                ? 'bg-[#ff4f96]/15 text-[#ff8ab9] border-[#ff4f96]/25'
+                                : 'bg-[#222936] text-[var(--text-muted)] border-[var(--border-subtle)]',
                               'border self-start',
                             ].join(' ')}
                           >
