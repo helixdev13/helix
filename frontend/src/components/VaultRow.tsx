@@ -335,11 +335,11 @@ export function VaultRow() {
             setExpanded((current) => !current);
           }
         }}
-        className="group cursor-pointer border-t border-[var(--divider)] outline-none transition-colors hover:bg-[rgba(255,255,255,0.02)] focus:outline-none focus-visible:outline-none"
+        className="group cursor-pointer border-t border-[var(--divider)] outline-none transition-[background-color,border-color] duration-200 ease-out hover:bg-[rgba(255,255,255,0.02)] focus:outline-none focus-visible:outline-none"
       >
         <td className="px-6 py-5 align-top">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#ff4f96]/15 text-[#ff8ab9] transition-transform duration-200 group-hover:scale-105">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#ff4f96]/15 text-[#ff8ab9] transition-[background-color,color,transform] duration-200 group-hover:scale-105 group-hover:bg-[#ff4f96]/20 group-hover:text-[#ffd1e1]">
               <span
                 className={[
                   'text-lg transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',

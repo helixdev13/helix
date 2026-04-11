@@ -25,7 +25,7 @@ function Metric({
   helper: string;
 }) {
   return (
-    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] p-4 transition-[border-color,background-color] duration-200 hover:border-[rgba(255,255,255,0.08)]">
+    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)] transition-[border-color,background-color] duration-200 hover:border-[rgba(255,255,255,0.08)] hover:bg-[rgba(31,36,45,0.98)]">
       <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--text-muted)]">{label}</div>
       <div className="mt-1 text-base font-semibold tabular-nums text-[#43c5ff]">{value}</div>
       <div className="mt-1 text-xs text-[var(--text-secondary)]">{helper}</div>

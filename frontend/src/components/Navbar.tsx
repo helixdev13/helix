@@ -56,7 +56,7 @@ export function Navbar() {
     ].join(' ');
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--divider)] bg-[var(--bg-header)]">
+    <header className="sticky top-0 z-50 border-b border-[var(--divider)] bg-[rgba(21,24,31,0.92)] backdrop-blur-[10px]">
       <div className="mx-auto flex max-w-[1240px] flex-col gap-3 px-6 py-3 lg:flex-row lg:items-center lg:justify-between">
         <button type="button" onClick={() => changeTab('vaults')} className="flex items-center gap-2 self-start">
           <HelixMark />

@@ -145,3 +145,7 @@ a[href],
 summary {
   cursor: pointer;
 }
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
