@@ -1,5 +1,6 @@
-import { createConfig, http } from 'wagmi';
+import { createConfig } from 'wagmi';
 import { injected, walletConnect } from 'wagmi/connectors';
+import { fallback, http } from 'viem';
 
 import { citrea } from './chains';
 
@@ -18,10 +19,15 @@ const walletConnectConnector =
       })
     : null;
 
+const citreaFallbackRpc = process.env.NEXT_PUBLIC_CITREA_FALLBACK_RPC_URL;
+const transport = citreaFallbackRpc
+  ? fallback([http('https://rpc.mainnet.citrea.xyz'), http(citreaFallbackRpc)])
+  : http('https://rpc.mainnet.citrea.xyz');
+
 export const config = createConfig({
   chains: [citrea],
   transports: {
-    [citrea.id]: http('https://rpc.citrea.xyz'),
+    [citrea.id]: transport,
   },
   connectors: [injected(), ...(walletConnectConnector ? [walletConnectConnector] : [])],
   ssr: false,

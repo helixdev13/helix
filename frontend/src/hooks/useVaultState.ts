@@ -32,6 +32,20 @@ export function useVaultState(vaultAddress: Address = CONTRACTS.helixVault): Vau
     chainId: CITREA_CHAIN_ID,
     query: {
       refetchInterval: 30_000,
+      placeholderData: {
+        vault: zeroAddress,
+        asset: zeroAddress,
+        guardian: zeroAddress,
+        strategy: zeroAddress,
+        riskEngine: zeroAddress,
+        totalAssets: 0n,
+        totalIdle: 0n,
+        totalStrategyAssets: 0n,
+        depositCap: 0n,
+        maxAllocationBps: 0,
+        paused: false,
+        withdrawOnly: false,
+      },
     },
   });
 

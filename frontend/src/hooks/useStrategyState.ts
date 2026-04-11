@@ -55,6 +55,25 @@ export function useStrategyState(vaultAddress: Address = CONTRACTS.helixVault): 
     chainId: CITREA_CHAIN_ID,
     query: {
       refetchInterval: 30_000,
+      placeholderData: {
+        vault: zeroAddress,
+        strategy: zeroAddress,
+        adapter: zeroAddress,
+        performanceFeeBps: 0,
+        rewardRatioBps: 0,
+        bountyBps: 0,
+        hlxMintRate: 0n,
+        minimumProfitThreshold: 0n,
+        compoundCooldown: 0n,
+        lastCompoundTimestamp: 0n,
+        feeRecipient: zeroAddress,
+        hlxToken: zeroAddress,
+        rewardDistributor: zeroAddress,
+        totalIdle: 0n,
+        totalDeployedAssets: 0n,
+        totalAssets: 0n,
+        rebalancePaused: false,
+      },
     },
   });
 
