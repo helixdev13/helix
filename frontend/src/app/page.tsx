@@ -193,13 +193,13 @@ export default function Home() {
                 <div className="overflow-x-auto">
                   <table className="min-w-[960px] w-full">
                     <thead>
-                      <tr className="bg-[#3d434d] text-xs uppercase tracking-[0.22em] text-[var(--text-muted)]">
-                        <th className="px-6 py-3 text-left font-medium">Vault Name</th>
-                        <th className="px-4 py-3 text-left font-medium">APY</th>
-                        <th className="px-4 py-3 text-left font-medium">Earn</th>
-                        <th className="px-4 py-3 text-left font-medium">Platform</th>
-                        <th className="px-4 py-3 text-left font-medium">TVL</th>
-                        <th className="px-6 py-3 text-right font-medium" />
+                      <tr className="bg-[#353b46] text-[12px] uppercase tracking-[0.18em] text-[#aeb7c6]">
+                        <th className="px-6 py-3 text-left font-semibold">Vault Name</th>
+                        <th className="px-4 py-3 text-left font-semibold">APY</th>
+                        <th className="px-4 py-3 text-left font-semibold">Earn</th>
+                        <th className="px-4 py-3 text-left font-semibold">Platform</th>
+                        <th className="px-4 py-3 text-left font-semibold">TVL</th>
+                        <th className="px-6 py-3 text-right font-semibold" />
                       </tr>
                     </thead>
                     <tbody>
