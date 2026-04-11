@@ -16,6 +16,7 @@ const CompoundPanel = dynamic(
 
 type DashboardTab = 'vaults' | 'compound';
 type VaultFilter = 'all' | 'single';
+const EXPLORER_BASE_URL = 'https://explorer.mainnet.citrea.xyz';
 
 function tabFromHash(hash: string): DashboardTab {
   return hash.replace('#', '') === 'compound' ? 'compound' : 'vaults';
@@ -37,6 +38,22 @@ function ChevronDownIcon() {
     <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 text-[var(--text-muted)]">
       <path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
     </svg>
+  );
+}
+
+function ExplorerAddressLink({ label, address }: { label: string; address: string }) {
+  return (
+    <a
+      href={`${EXPLORER_BASE_URL}/address/${address}`}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex items-center gap-2 transition-colors hover:text-[var(--text-primary)] hover:underline hover:underline-offset-4"
+      aria-label={`Open ${label} address in explorer`}
+      title={`Open ${label} in explorer`}
+    >
+      <span>{label}</span>
+      <span className="text-[var(--text-secondary)]">{truncateAddress(address)}</span>
+    </a>
   );
 }
 
@@ -225,12 +242,12 @@ export default function Home() {
         <footer className="mt-8 border-t border-[var(--divider)] pt-5 text-xs text-[var(--text-muted)]">
           <div className="text-sm text-[var(--text-secondary)]">Built on Citrea</div>
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
-            <span>Vault {truncateAddress(CONTRACTS.helixVault)}</span>
-            <span>Strategy {truncateAddress(CONTRACTS.strategy)}</span>
-            <span>HLX {truncateAddress(CONTRACTS.hlxToken)}</span>
-            <span>Rewards {truncateAddress(CONTRACTS.rewardDistributor)}</span>
-            <span>USDC.e {truncateAddress(TOKENS.usdce)}</span>
-            <span>wcBTC {truncateAddress(TOKENS.wcbtc)}</span>
+            <ExplorerAddressLink label="Vault" address={CONTRACTS.helixVault} />
+            <ExplorerAddressLink label="Strategy" address={CONTRACTS.strategy} />
+            <ExplorerAddressLink label="HLX" address={CONTRACTS.hlxToken} />
+            <ExplorerAddressLink label="Rewards" address={CONTRACTS.rewardDistributor} />
+            <ExplorerAddressLink label="USDC.e" address={TOKENS.usdce} />
+            <ExplorerAddressLink label="wcBTC" address={TOKENS.wcbtc} />
           </div>
         </footer>
       </div>
