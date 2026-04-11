@@ -60,7 +60,7 @@ function MetricCell({
       {isLoading ? (
         <Skeleton className="mt-2 h-5 w-24 rounded-lg" />
       ) : (
-        <div className={['mt-2 text-sm font-semibold leading-tight', tone === 'accent' ? 'text-[#42c3ff]' : 'text-[var(--text-primary)]'].join(' ')}>
+        <div className={['mt-2 text-sm font-semibold leading-tight tabular-nums', tone === 'accent' ? 'text-[#42c3ff]' : 'text-[var(--text-primary)]'].join(' ')}>
           {value}
         </div>
       )}
@@ -240,7 +240,7 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
                 {claimRewards.isClaiming ? 'Claiming...' : 'Claim HLX'}
               </GradientButton>
               <div className="text-sm text-[var(--text-secondary)]">
-                Earned: <span className="font-semibold text-[var(--text-primary)]">{formatHlx(userRewards.earnedHlx)} HLX</span>
+                Earned: <span className="font-semibold tabular-nums text-[var(--text-primary)]">{formatHlx(userRewards.earnedHlx)} HLX</span>
               </div>
             </div>
           </div>
@@ -356,7 +356,9 @@ export function VaultRow() {
                 </span>
                 <span className="text-[11px] text-[var(--text-muted)]">JuiceSwap on Citrea</span>
               </div>
-              <div className="mt-1 text-[17px] font-semibold leading-tight text-[var(--text-primary)]">Helix USDC.e Vault</div>
+              <div className="mt-1 text-[17px] font-semibold leading-tight tracking-[-0.01em] text-[var(--text-primary)]">
+                Helix USDC.e Vault
+              </div>
             </div>
           </div>
         </td>

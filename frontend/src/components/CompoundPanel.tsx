@@ -27,7 +27,7 @@ function Metric({
   return (
     <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] p-4 transition-[border-color,background-color] duration-200 hover:border-[rgba(255,255,255,0.08)]">
       <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--text-muted)]">{label}</div>
-      <div className="mt-1 text-base font-semibold text-[#43c5ff]">{value}</div>
+      <div className="mt-1 text-base font-semibold tabular-nums text-[#43c5ff]">{value}</div>
       <div className="mt-1 text-xs text-[var(--text-secondary)]">{helper}</div>
     </div>
   );
@@ -117,7 +117,7 @@ export function CompoundPanel() {
 
           <div className="text-sm text-[var(--text-secondary)]">
             Minimum profit threshold:{' '}
-            <span className="font-semibold text-[var(--text-primary)]">
+            <span className="font-semibold tabular-nums text-[var(--text-primary)]">
               {formatUsdce(strategyState.minimumProfitThreshold)} USDC.e
             </span>
           </div>
@@ -185,16 +185,16 @@ export function CompoundPanel() {
                   {history.compounds.map((entry, index) => (
                     <tr key={`${entry.transactionHash}-${entry.blockNumber}`} className="rounded-xl">
                       <td className={['px-3 py-3 text-sm', index % 2 === 0 ? 'bg-[var(--bg-surface)]' : 'bg-[var(--bg-surface-2)]', 'rounded-l-xl text-[var(--text-primary)]'].join(' ')}>
-                        {formatTimestamp(entry.timestamp)}
+                        <span className="tabular-nums">{formatTimestamp(entry.timestamp)}</span>
                       </td>
                       <td className={['px-3 py-3 text-sm', index % 2 === 0 ? 'bg-[var(--bg-surface)]' : 'bg-[var(--bg-surface-2)]', 'text-[var(--text-primary)]'].join(' ')}>
-                        {formatUsdce(entry.profit)} USDC.e
+                        <span className="tabular-nums">{formatUsdce(entry.profit)} USDC.e</span>
                       </td>
                       <td className={['px-3 py-3 text-sm', index % 2 === 0 ? 'bg-[var(--bg-surface)]' : 'bg-[var(--bg-surface-2)]', 'text-[var(--text-primary)]'].join(' ')}>
-                        {formatUsdce(entry.performanceFee)} USDC.e
+                        <span className="tabular-nums">{formatUsdce(entry.performanceFee)} USDC.e</span>
                       </td>
                       <td className={['px-3 py-3 text-sm', index % 2 === 0 ? 'bg-[var(--bg-surface)]' : 'bg-[var(--bg-surface-2)]', 'text-[var(--text-primary)]'].join(' ')}>
-                        {formatHlx(entry.hlxMinted)} HLX
+                        <span className="tabular-nums">{formatHlx(entry.hlxMinted)} HLX</span>
                       </td>
                       <td className={['rounded-r-xl px-3 py-3 text-sm', index % 2 === 0 ? 'bg-[var(--bg-surface)]' : 'bg-[var(--bg-surface-2)]'].join(' ')}>
                         <div className="flex flex-col gap-1">

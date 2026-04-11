@@ -115,13 +115,13 @@ export default function Home() {
                 <div className="flex flex-wrap items-center gap-6">
                   <div className="text-sm text-[var(--text-secondary)]">
                     TVL{' '}
-                    <span className="font-semibold text-[var(--text-primary)]">
+                    <span className="font-semibold tabular-nums text-[var(--text-primary)]">
                       {formatUsdce(vaultState.totalAssets)} USDC.e
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="h-5 w-5 rounded-full bg-[#ff4f96]" />
-                    <span className="text-sm font-semibold text-[var(--text-primary)]">—</span>
+                    <span className="text-sm font-semibold tabular-nums text-[var(--text-primary)]">—</span>
                     <span className="text-xs text-[var(--text-muted)]">HLX</span>
                   </div>
                 </div>

@@ -89,6 +89,7 @@ body {
     var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), 'Inter', sans-serif;
+  font-variant-numeric: tabular-nums;
   color-scheme: dark;
   -moz-osx-font-smoothing: grayscale;
 }
