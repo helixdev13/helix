@@ -14,6 +14,7 @@ type ConnectWalletButtonProps = {
 
 export function ConnectWalletButton({ className = '' }: ConnectWalletButtonProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
   const [isConnectorModalOpen, setIsConnectorModalOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [connectingConnectorId, setConnectingConnectorId] = useState<string | null>(null);
@@ -30,6 +31,10 @@ export function ConnectWalletButton({ className = '' }: ConnectWalletButtonProps
 
   const isWrongChain = Boolean(isConnected && chain && chain.id !== citrea.id);
   const balanceLabel = balance.data ? `${balance.data.formatted} ${balance.data.symbol ?? 'cBTC'}` : '—';
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isConnected) {
@@ -70,6 +75,16 @@ export function ConnectWalletButton({ className = '' }: ConnectWalletButtonProps
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, []);
+
+  if (!mounted) {
+    return (
+      <div ref={wrapperRef} className="relative w-full">
+        <GradientButton className={className} disabled>
+          Connect Wallet
+        </GradientButton>
+      </div>
+    );
+  }
 
   return (
     <div ref={wrapperRef} className="relative w-full">
