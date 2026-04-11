@@ -71,7 +71,7 @@ function MetricCell({
 
 function ActionCard({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 transition-[border-color,background-color,transform] duration-200 hover:-translate-y-0.5 hover:border-[rgba(255,255,255,0.08)] sm:p-5">
+    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 transition-[border-color,background-color] duration-200 hover:border-[rgba(255,255,255,0.08)] sm:p-5">
       <div className="mb-3 space-y-1">
         <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
         <div className="text-xs leading-5 text-[var(--text-secondary)]">{description}</div>

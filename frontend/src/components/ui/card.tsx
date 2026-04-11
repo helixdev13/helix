@@ -6,8 +6,8 @@ export function Card({ className = '', ...props }: DivProps) {
   return (
     <div
       className={[
-        'rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-none transition-[border-color,background-color,transform] duration-200',
-        'hover:-translate-y-0.5 hover:border-[rgba(255,255,255,0.08)]',
+        'rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-none transition-[border-color,background-color] duration-200',
+        'hover:border-[rgba(255,255,255,0.08)]',
         className,
       ].join(' ')}
       {...props}
