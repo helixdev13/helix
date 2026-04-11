@@ -67,7 +67,7 @@ function ActionCard({
   children: ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-[#F0E8E8] bg-[#FFF8F6] p-4">
+    <div className="rounded-2xl border border-[#F0E8E8] bg-[#FFF8F6] p-5 sm:p-6">
       <div className="mb-3 space-y-1">
         <div className="text-sm font-semibold text-[#333333]">{title}</div>
         <div className="text-xs leading-5 text-[#666666]">{description}</div>
@@ -192,7 +192,7 @@ export function VaultRow() {
             </div>
           </div>
 
-          <div className="grid flex-1 grid-cols-2 gap-3 text-left sm:grid-cols-4 lg:max-w-3xl lg:gap-4">
+          <div className="grid flex-1 grid-cols-1 gap-3 text-left sm:grid-cols-2 xl:grid-cols-4 lg:max-w-3xl lg:gap-4">
             <Metric
               label="APY"
               value="—"
@@ -231,7 +231,10 @@ export function VaultRow() {
         </div>
 
         {expanded ? (
-          <div className="grid gap-4 px-5 py-5 sm:px-6 lg:grid-cols-2">
+          <div
+            className="grid gap-4 px-5 py-5 sm:px-6 lg:grid-cols-2"
+            onClick={(event) => event.stopPropagation()}
+          >
             {!connected ? (
               <div className="rounded-2xl border border-dashed border-[#F0E8E8] bg-[#FFF8F6] p-6 lg:col-span-2">
                 <div className="text-lg font-semibold text-[#333333]">Connect to Deposit</div>
@@ -328,7 +331,7 @@ export function VaultRow() {
                           type="button"
                           variant="ghost"
                           className="h-auto px-0 py-0 text-xs text-[#D4797F]"
-                          onClick={() => setStakeValue(formatUsdce(userPosition.shares))}
+                          onClick={() => setStakeValue(formatHlx(userPosition.shares))}
                         >
                           Max
                         </Button>
@@ -362,7 +365,7 @@ export function VaultRow() {
                           type="button"
                           variant="ghost"
                           className="h-auto px-0 py-0 text-xs text-[#D4797F]"
-                          onClick={() => setUnstakeValue(formatUsdce(userRewards.stakedShares))}
+                          onClick={() => setUnstakeValue(formatHlx(userRewards.stakedShares))}
                         >
                           Max
                         </Button>
@@ -385,7 +388,7 @@ export function VaultRow() {
                       </Button>
                     </div>
 
-                    <div className="rounded-2xl border border-[#F0E8E8] bg-white p-4">
+                    <div className="rounded-2xl border border-[#F0E8E8] bg-white p-5">
                       <div className="text-xs uppercase tracking-[0.2em] text-[#999999]">Claim HLX</div>
                       <div className="mt-2 text-sm text-[#666666]">
                         Claim your accrued HLX rewards from compound fees.
@@ -408,7 +411,7 @@ export function VaultRow() {
             )}
 
             <div className="lg:col-span-2">
-              <div className="rounded-2xl border border-[#F0E8E8] bg-white p-4 text-sm text-[#666666]">
+              <div className="rounded-2xl border border-[#F0E8E8] bg-white px-5 py-5 text-sm text-[#666666]">
                 <span className="font-medium text-[#333333]">Latest transaction:</span>{' '}
                 {latestTxHash ? (
                   <a

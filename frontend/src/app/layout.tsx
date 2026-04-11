@@ -16,6 +16,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Helix — Citrea Yield Optimizer',
   description: 'Deposit USDC.e, earn trading fees + HLX rewards',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

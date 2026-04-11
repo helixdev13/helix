@@ -26,7 +26,7 @@ function Metric({
   helper: string;
 }) {
   return (
-    <div className="rounded-2xl border border-[#F0E8E8] bg-[#FFF8F6] px-4 py-3">
+    <div className="rounded-2xl border border-[#F0E8E8] bg-[#FFF8F6] px-4 py-4">
       <div className="text-[11px] uppercase tracking-[0.22em] text-[#999999]">{label}</div>
       <div className="mt-1 text-base font-semibold text-[#333333]">{value}</div>
       <div className="mt-1 text-xs text-[#666666]">{helper}</div>
@@ -102,14 +102,14 @@ export function CompoundPanel() {
         </CardHeader>
         <CardContent className="space-y-4">
           {strategyState.isLoading ? (
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
               <Skeleton className="h-24" />
               <Skeleton className="h-24" />
               <Skeleton className="h-24" />
               <Skeleton className="h-24" />
             </div>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
               <Metric
                 label="Last compound"
                 value={formatTimestamp(strategyState.lastCompoundTimestamp)}
@@ -192,7 +192,7 @@ export function CompoundPanel() {
               No compounds have been executed yet.
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="-mx-5 overflow-x-auto px-5 pb-1 sm:mx-0 sm:px-0">
               <table className="min-w-[760px] w-full border-separate border-spacing-y-2">
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-[0.2em] text-[#999999]">
@@ -240,10 +240,10 @@ export function CompoundPanel() {
               </table>
             </div>
           )}
-        </CardContent>
-      </Card>
+      </CardContent>
+    </Card>
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         <Metric label="Total compounds" value={`${history.compounds.length}`} helper="Executed harvests" />
         <Metric label="Total profit" value={`${formatUsdce(totalProfit)} USDC.e`} helper="Harvested profit" />
         <Metric label="HLX minted" value={`${formatHlx(totalHlx)} HLX`} helper="Minted to callers and rewards" />

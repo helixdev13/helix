@@ -91,10 +91,10 @@ export default function Home() {
                   Single-asset USDC.e vaults on Citrea. Deposit, withdraw, and stake shares from one screen.
                 </p>
               </div>
-              <div className="grid gap-3 sm:grid-cols-3">
-              <Metric
-                label="TVL"
-                value={`${formatUsdce(vaultState.totalAssets)} USDC.e`}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <Metric
+                  label="TVL"
+                  value={`${formatUsdce(vaultState.totalAssets)} USDC.e`}
                 helper="Total assets currently in the vault"
                 isLoading={vaultState.isLoading}
               />

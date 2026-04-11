@@ -34,7 +34,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#F3DDE3] bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-[1000px] flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mx-auto flex max-w-[1000px] flex-col items-stretch gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
         <button
           type="button"
           onClick={() => changeTab('vaults')}
@@ -47,7 +47,7 @@ export function Navbar() {
           defaultValue={activeTab}
           value={activeTab}
           onValueChange={changeTab}
-          className="w-full max-w-xs self-center"
+          className="w-full lg:max-w-xs lg:self-center"
         >
           <TabsList className="w-full justify-center">
             <TabsTrigger value="vaults">Vaults</TabsTrigger>
@@ -55,12 +55,12 @@ export function Navbar() {
           </TabsList>
         </Tabs>
 
-        <div className="self-end">
+        <div className="w-full self-stretch lg:w-auto lg:self-end">
           <ConnectButton.Custom>
             {({ account, chain, mounted, openAccountModal, openChainModal, openConnectModal }) => {
               if (!mounted) {
                 return (
-                  <GradientButton className="min-w-[170px]" disabled>
+                  <GradientButton className="w-full min-w-0 lg:min-w-[170px]" disabled>
                     Connect Wallet
                   </GradientButton>
                 );
@@ -75,7 +75,7 @@ export function Navbar() {
 
               return (
                 <GradientButton
-                  className="min-w-[170px]"
+                  className="w-full min-w-0 lg:min-w-[170px]"
                   onClick={() => {
                     if (!connected) {
                       openConnectModal();

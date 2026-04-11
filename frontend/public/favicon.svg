@@ -1,0 +1,14 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="helix-gradient" x1="12" y1="12" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E8A0B8" />
+      <stop offset="100%" stop-color="#D4797F" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="18" fill="#FFF8F6" stroke="#F0E8E8" />
+  <path d="M20 18V46" stroke="url(#helix-gradient)" stroke-width="6" stroke-linecap="round" />
+  <path d="M44 18V46" stroke="url(#helix-gradient)" stroke-width="6" stroke-linecap="round" />
+  <path d="M20 32H44" stroke="url(#helix-gradient)" stroke-width="6" stroke-linecap="round" />
+  <path d="M24 20C28 24 36 24 40 20" stroke="#B85C7D" stroke-width="2.5" stroke-linecap="round" />
+  <path d="M24 44C28 40 36 40 40 44" stroke="#B85C7D" stroke-width="2.5" stroke-linecap="round" />
+</svg>
