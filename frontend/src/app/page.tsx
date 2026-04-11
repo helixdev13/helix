@@ -83,9 +83,14 @@ export default function Home() {
           </div>
 
           <div className="mt-4 flex justify-center">
-            <Button variant="outline" onClick={() => router.push('/vault')}>
-              Open vault
-            </Button>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button variant="outline" onClick={() => router.push('/vault')}>
+                Open vault
+              </Button>
+              <Button variant="outline" onClick={() => router.push('/earn')}>
+                Earn HLX
+              </Button>
+            </div>
           </div>
 
           {isConnected && address && (
