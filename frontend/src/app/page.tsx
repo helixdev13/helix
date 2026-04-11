@@ -90,6 +90,9 @@ export default function Home() {
               <Button variant="outline" onClick={() => router.push('/earn')}>
                 Earn HLX
               </Button>
+              <Button variant="outline" onClick={() => router.push('/compound')}>
+                Compound dashboard
+              </Button>
             </div>
           </div>
 

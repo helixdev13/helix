@@ -10,9 +10,12 @@ export type StrategyState = {
   performanceFeeBps: number;
   rewardRatioBps: number;
   bountyBps: number;
+  hlxMintRate: bigint;
+  minimumProfitThreshold: bigint;
   compoundCooldown: bigint;
   lastCompoundTimestamp: bigint;
   cooldownRemaining: bigint;
+  feeRecipient: Address;
   hlxToken: Address;
   rewardDistributor: Address;
   totalIdle: bigint;
@@ -63,9 +66,12 @@ export function useStrategyState(vaultAddress: Address = CONTRACTS.helixVault): 
     performanceFeeBps: view?.performanceFeeBps ?? 0,
     rewardRatioBps: view?.rewardRatioBps ?? 0,
     bountyBps: view?.bountyBps ?? 0,
+    hlxMintRate: view?.hlxMintRate ?? 0n,
+    minimumProfitThreshold: view?.minimumProfitThreshold ?? 0n,
     compoundCooldown: view?.compoundCooldown ?? 0n,
     lastCompoundTimestamp: view?.lastCompoundTimestamp ?? 0n,
     cooldownRemaining,
+    feeRecipient: view?.feeRecipient ?? zeroAddress,
     totalIdle: view?.totalIdle ?? 0n,
     totalDeployedAssets: view?.totalDeployedAssets ?? 0n,
     totalAssets: view?.totalAssets ?? 0n,
