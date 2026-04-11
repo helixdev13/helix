@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAccount } from 'wagmi';
 import { parseUnits } from 'viem';
@@ -291,8 +291,14 @@ function ConnectPromptCard() {
 
 export function VaultRow() {
   const { address } = useAccount();
-  const connected = Boolean(address);
+  const [mounted, setMounted] = useState(false);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const connected = mounted && Boolean(address);
 
   const vaultState = useVaultState();
   const strategyState = useStrategyState();
@@ -356,7 +362,7 @@ export function VaultRow() {
             <Metric
               label="Earned HLX"
               value={`${formatHlx(userRewards.earnedHlx)} HLX`}
-              isLoading={userRewards.isLoading}
+              isLoading={!mounted || userRewards.isLoading}
             />
             <div className="flex items-center justify-end gap-2">
               {connected ? (
