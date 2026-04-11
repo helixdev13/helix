@@ -47,12 +47,14 @@ function ExplorerAddressLink({ label, address }: { label: string; address: strin
       href={`${EXPLORER_BASE_URL}/address/${address}`}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-2 transition-colors hover:text-[var(--text-primary)] hover:underline hover:underline-offset-4"
+      className="inline-flex items-center gap-2 transition-colors"
       aria-label={`Open ${label} address in explorer`}
       title={`Open ${label} in explorer`}
     >
-      <span>{label}</span>
-      <span className="text-[var(--text-secondary)]">{truncateAddress(address)}</span>
+      <span className="text-[var(--text-secondary)]">{label}</span>
+      <span className="font-mono text-[#8fb7ff] underline decoration-[rgba(143,183,255,0.35)] underline-offset-4 transition-colors hover:text-[#c7ddff] hover:decoration-[#c7ddff]">
+        {truncateAddress(address)}
+      </span>
     </a>
   );
 }
