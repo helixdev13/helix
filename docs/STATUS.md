@@ -75,7 +75,7 @@ The current deployed `JuiceSwap` stack remains untouched while this work proceed
 - [JUICESWAP_LIVE_RUNBOOK.md](./JUICESWAP_LIVE_RUNBOOK.md)
 - [JUICESWAP_ORACLE_FREEZE.md](./JUICESWAP_ORACLE_FREEZE.md)
 - [CITREA_MAINNET_PREREQUISITES.md](./CITREA_MAINNET_PREREQUISITES.md)
-- [HELIX_V2_LAUNCH_CHECKLIST.md](./HELIX_V2_LAUNCH_CHECKLIST.md)
+- [HELIX_LAUNCH_CHECKLIST.md](./HELIX_LAUNCH_CHECKLIST.md)
 - [config/citrea/juiceswap_usdce_wcbtc_candidate.md](../config/citrea/juiceswap_usdce_wcbtc_candidate.md)
 - [HELIX_MASTER_ROADMAP.md](./HELIX_MASTER_ROADMAP.md)
 - [DeployCitreaAutoCompoundVault.s.sol](../contracts/script/DeployCitreaAutoCompoundVault.s.sol)

@@ -196,7 +196,7 @@ The immediate engineering mission is:
 - keep both deployed Citrea stacks disabled by default unless a deliberate enablement review is requested
 - keep the frozen `JuiceSwap` deployment untouched
 - continue expanding the PancakeBunny-style auto-compound smart-vault lane
-- use `HELIX_V2_LAUNCH_CHECKLIST.md` as the launch gate for any future v2 rollout
+- use `HELIX_LAUNCH_CHECKLIST.md` as the launch gate for any future rollout
 - preserve the already-hardened vault/strategy boundary
 - do not reintroduce the deleted generic branch
 
@@ -227,7 +227,7 @@ If that bar is not met, broader product expansion is premature.
 - [JUICESWAP_OPERATOR_HANDOFF.md](./JUICESWAP_OPERATOR_HANDOFF.md)
 - [JUICESWAP_LIVE_RUNBOOK.md](./JUICESWAP_LIVE_RUNBOOK.md)
 - [JUICESWAP_ORACLE_FREEZE.md](./JUICESWAP_ORACLE_FREEZE.md)
-- [HELIX_V2_LAUNCH_CHECKLIST.md](./HELIX_V2_LAUNCH_CHECKLIST.md)
+- [HELIX_LAUNCH_CHECKLIST.md](./HELIX_LAUNCH_CHECKLIST.md)
 - [config/citrea/juiceswap_usdce_wcbtc_candidate.md](../config/citrea/juiceswap_usdce_wcbtc_candidate.md)
 
 ### v2 deployment surface

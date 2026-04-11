@@ -24,36 +24,7 @@ library Events {
     event StrategyStrategistUpdated(address indexed strategist);
     event StrategyGuardianUpdated(address indexed guardian);
     event RebalancePauseUpdated(address indexed caller, bool enabled);
-    event AllocatorPauseUpdated(address indexed caller, bool enabled);
-    event AllocatorIdleFloorUpdated(address indexed caller, uint16 previousBps, uint16 newBps);
-    event AllocatorGlobalAllocationCapUpdated(
-        address indexed caller, uint16 previousBps, uint16 newBps
-    );
     event AdapterStrategyBound(address indexed adapter, address indexed strategy);
-    event AllocatorAdapterConfigured(
-        address indexed adapter, bool enabled, uint16 maxAllocationBps
-    );
-    event AllocatorAllocated(address indexed strategy, address indexed adapter, uint256 assets);
-    event AllocatorDeallocated(address indexed strategy, address indexed adapter, uint256 assets);
-    event AllocatorAdapterWithdrawal(
-        address indexed strategy,
-        address indexed adapter,
-        uint256 requestedAssets,
-        uint256 assetsReceived
-    );
-    event AllocatorAdapterHarvest(
-        address indexed strategy, address indexed adapter, uint256 assetsHarvested
-    );
-    event AllocatorAdapterUnwind(
-        address indexed strategy, address indexed adapter, uint256 assetsReturned
-    );
-    event AllocatorAdapterOperationFailed(
-        address indexed strategy,
-        address indexed adapter,
-        uint8 indexed operation,
-        uint256 requestedAssets,
-        bytes reason
-    );
     event StrategyRebalanced(
         address indexed strategy,
         address indexed adapter,
