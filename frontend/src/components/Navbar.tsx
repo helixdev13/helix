@@ -49,10 +49,10 @@ export function Navbar() {
 
   const tabClassName = (tab: DashboardTab) =>
     [
-      'relative px-1 pb-1 text-[15px] font-medium transition-colors duration-150',
+      'relative rounded-full px-3 py-1.5 text-[15px] font-medium transition-[background-color,color] duration-150',
       activeTab === tab
-        ? 'text-[#ff4f96] after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:bg-[#ff4f96]'
-        : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
+        ? 'bg-[rgba(255,79,150,0.08)] text-[#ff4f96] after:absolute after:inset-x-3 after:-bottom-0.5 after:h-px after:bg-[#ff4f96]'
+        : 'text-[var(--text-muted)] hover:bg-[rgba(255,255,255,0.03)] hover:text-[var(--text-secondary)]',
     ].join(' ');
 
   return (
