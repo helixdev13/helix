@@ -23,7 +23,7 @@ function tabFromHash(hash: string): DashboardTab {
 
 function SearchIcon() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 20 20" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]">
+    <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 text-[var(--text-muted)]">
       <path
         d="M8.5 3.5a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-1.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13Zm4.75 10.44 3.1 3.1-1.06 1.06-3.1-3.1 1.06-1.06Z"
         fill="currentColor"
@@ -34,7 +34,7 @@ function SearchIcon() {
 
 function ChevronDownIcon() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 20 20" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]">
+    <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 text-[var(--text-muted)]">
       <path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
     </svg>
   );
@@ -161,8 +161,10 @@ export default function Home() {
                 </div>
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <div className="relative">
-                    <SearchIcon />
+                  <div className="relative w-full sm:w-auto">
+                    <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+                      <SearchIcon />
+                    </div>
                     <Input
                       value={searchQuery}
                       onChange={(event) => setSearchQuery(event.target.value)}
