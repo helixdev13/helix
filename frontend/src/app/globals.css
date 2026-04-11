@@ -7,8 +7,8 @@
   --bg-header: #15181f;
 
   --text-primary: #f5f7fb;
-  --text-secondary: #8992a1;
-  --text-muted: #66707f;
+  --text-secondary: #9aa3b0;
+  --text-muted: #788393;
 
   --accent-primary: #ff4f96;
   --accent-primary-hover: #ff5ca0;
@@ -78,7 +78,10 @@ html {
 
 body {
   min-height: 100%;
-  background: var(--background);
+  background:
+    radial-gradient(circle at top, rgba(255, 79, 150, 0.08), transparent 24%),
+    radial-gradient(circle at 78% 0%, rgba(66, 195, 255, 0.04), transparent 20%),
+    var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), 'Inter', sans-serif;
   color-scheme: dark;

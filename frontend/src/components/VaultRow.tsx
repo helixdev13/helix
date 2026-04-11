@@ -71,7 +71,7 @@ function MetricCell({
 
 function ActionCard({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 sm:p-5">
+    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 transition-[border-color,background-color,transform] duration-200 hover:-translate-y-0.5 hover:border-[rgba(255,255,255,0.08)] sm:p-5">
       <div className="mb-3 space-y-1">
         <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
         <div className="text-xs leading-5 text-[var(--text-secondary)]">{description}</div>
@@ -339,7 +339,7 @@ export function VaultRow() {
       >
         <td className="px-6 py-5 align-top">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#ff4f96]/15 text-[#ff8ab9]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#ff4f96]/15 text-[#ff8ab9] transition-transform duration-200 group-hover:scale-105">
               <span
                 className={[
                   'text-lg transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',

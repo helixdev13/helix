@@ -23,7 +23,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       type={type}
       className={[
-        'inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm font-medium transition-colors duration-200',
+        'inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm font-medium transition-[background-color,transform,color,border-color] duration-200',
+        'transform-gpu hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4f96] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0f16]',
         'disabled:pointer-events-none disabled:opacity-50',
         variantClasses[variant],
