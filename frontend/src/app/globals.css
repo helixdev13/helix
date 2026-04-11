@@ -1,30 +1,69 @@
 @import 'tailwindcss';
 
 :root {
-  --background: #fafafa;
-  --foreground: #333333;
-  --card: #ffffff;
-  --card-foreground: #333333;
-  --popover: #ffffff;
-  --popover-foreground: #333333;
-  --primary: #e8a0b8;
+  --bg-page: #0d0f16;
+  --bg-surface: #171b23;
+  --bg-surface-2: #222936;
+  --bg-header: #1e2330;
+
+  --text-primary: #f5f7fb;
+  --text-secondary: #a3acb9;
+  --text-muted: #788190;
+
+  --accent-primary: #ff4f96;
+  --accent-primary-hover: #ff5ca0;
+  --accent-info: #43c5ff;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --divider: rgba(255, 255, 255, 0.05);
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+
+  --transition-fast: 140ms ease;
+
+  --background: var(--bg-page);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-header);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent-primary);
   --primary-foreground: #ffffff;
-  --secondary: #fff8f6;
-  --secondary-foreground: #333333;
-  --muted: #f7f1f0;
-  --muted-foreground: #666666;
-  --accent: #f5e8ee;
-  --accent-foreground: #333333;
-  --destructive: #d4797f;
+  --secondary: var(--bg-surface-2);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface-2);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--bg-surface-2);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--accent-primary);
   --destructive-foreground: #ffffff;
-  --border: #f0e8e8;
-  --input: #f0e8e8;
-  --ring: #d4797f;
+  --border: var(--border-subtle);
+  --input: var(--border-subtle);
+  --ring: var(--accent-primary);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --font-sans: var(--font-inter);
 }
 
@@ -34,6 +73,7 @@
 
 html {
   height: 100%;
+  background: var(--background);
 }
 
 body {
@@ -41,6 +81,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), 'Inter', sans-serif;
+  color-scheme: dark;
 }
 
 a {

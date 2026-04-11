@@ -10,7 +10,6 @@ import { ConnectWalletButton } from '@/components/ConnectWalletButton';
 import { GradientButton } from '@/components/GradientButton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -43,41 +42,36 @@ function parseAmount(value: string, decimals: number) {
   }
 }
 
-function Metric({
+function MetricCell({
   label,
   value,
+  helper,
   isLoading = false,
 }: {
   label: string;
   value: string;
+  helper: string;
   isLoading?: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-[#F0E8E8] bg-[#FFF8F6] px-4 py-3">
-      <div className="text-[11px] uppercase tracking-[0.22em] text-[#999999]">{label}</div>
+    <div>
+      <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--text-muted)]">{label}</div>
       {isLoading ? (
-        <Skeleton className="mt-1 h-5 w-24" />
+        <Skeleton className="mt-2 h-5 w-24" />
       ) : (
-        <div className="mt-1 text-base font-semibold text-[#333333]">{value}</div>
+        <div className="mt-2 text-sm font-semibold text-[var(--text-primary)]">{value}</div>
       )}
+      <div className="mt-1 text-xs text-[var(--text-secondary)]">{helper}</div>
     </div>
   );
 }
 
-function ActionCard({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: string;
-  children: ReactNode;
-}) {
+function ActionCard({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return (
-    <div className="rounded-2xl border border-[#F0E8E8] bg-[#FFF8F6] p-5 sm:p-6">
-      <div className="mb-3 space-y-1">
-        <div className="text-sm font-semibold text-[#333333]">{title}</div>
-        <div className="text-xs leading-5 text-[#666666]">{description}</div>
+    <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5 sm:p-6">
+      <div className="mb-4 space-y-1">
+        <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
+        <div className="text-xs leading-5 text-[var(--text-secondary)]">{description}</div>
       </div>
       {children}
     </div>
@@ -108,16 +102,16 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
     deposit.error ?? withdraw.error ?? stake.error ?? unstake.error ?? claimRewards.error;
 
   return (
-    <>
+    <div className="grid gap-4 lg:grid-cols-2">
       <ActionCard title="Deposit & Withdraw" description="Approval happens automatically when needed.">
         <div className="space-y-4">
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-3">
-              <label className="text-xs uppercase tracking-[0.2em] text-[#999999]">Deposit USDC.e</label>
+              <label className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">Deposit USDC.e</label>
               <Button
                 type="button"
                 variant="ghost"
-                className="h-auto px-0 py-0 text-xs text-[#D4797F]"
+                className="h-auto px-0 py-0 text-xs text-[#ff8ab9]"
                 onClick={() => setDepositValue(formatUsdce(userPosition.usdceBalance))}
               >
                 Max
@@ -141,11 +135,11 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
 
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-3">
-              <label className="text-xs uppercase tracking-[0.2em] text-[#999999]">Withdraw USDC.e</label>
+              <label className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">Withdraw USDC.e</label>
               <Button
                 type="button"
                 variant="ghost"
-                className="h-auto px-0 py-0 text-xs text-[#D4797F]"
+                className="h-auto px-0 py-0 text-xs text-[#ff8ab9]"
                 onClick={() => setWithdrawValue(formatUsdce(userPosition.sharesInUsdce))}
               >
                 Max
@@ -175,11 +169,11 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
         <div className="space-y-4">
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-3">
-              <label className="text-xs uppercase tracking-[0.2em] text-[#999999]">Stake vault shares</label>
+              <label className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">Stake vault shares</label>
               <Button
                 type="button"
                 variant="ghost"
-                className="h-auto px-0 py-0 text-xs text-[#D4797F]"
+                className="h-auto px-0 py-0 text-xs text-[#ff8ab9]"
                 onClick={() => setStakeValue(formatHlx(userPosition.shares))}
               >
                 Max
@@ -203,11 +197,11 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
 
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-3">
-              <label className="text-xs uppercase tracking-[0.2em] text-[#999999]">Unstake shares</label>
+              <label className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">Unstake shares</label>
               <Button
                 type="button"
                 variant="ghost"
-                className="h-auto px-0 py-0 text-xs text-[#D4797F]"
+                className="h-auto px-0 py-0 text-xs text-[#ff8ab9]"
                 onClick={() => setUnstakeValue(formatHlx(userRewards.stakedShares))}
               >
                 Max
@@ -231,9 +225,9 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
             </Button>
           </div>
 
-          <div className="rounded-2xl border border-[#F0E8E8] bg-white p-5">
-            <div className="text-xs uppercase tracking-[0.2em] text-[#999999]">Claim HLX</div>
-            <div className="mt-2 text-sm text-[#666666]">Claim your accrued HLX rewards from compound fees.</div>
+          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] p-5">
+            <div className="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">Claim HLX</div>
+            <div className="mt-2 text-sm text-[var(--text-secondary)]">Claim your accrued HLX rewards from compound fees.</div>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <GradientButton
                 disabled={userRewards.earnedHlx <= 0n || claimRewards.isClaiming}
@@ -241,8 +235,8 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
               >
                 {claimRewards.isClaiming ? 'Claiming...' : 'Claim HLX'}
               </GradientButton>
-              <div className="text-sm text-[#666666]">
-                Earned: <span className="font-semibold text-[#333333]">{formatHlx(userRewards.earnedHlx)} HLX</span>
+              <div className="text-sm text-[var(--text-secondary)]">
+                Earned: <span className="font-semibold text-[var(--text-primary)]">{formatHlx(userRewards.earnedHlx)} HLX</span>
               </div>
             </div>
           </div>
@@ -250,14 +244,14 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
       </ActionCard>
 
       <div className="lg:col-span-2">
-        <div className="rounded-2xl border border-[#F0E8E8] bg-white px-5 py-5 text-sm text-[#666666]">
-          <span className="font-medium text-[#333333]">Latest transaction:</span>{' '}
+        <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-5 text-sm text-[var(--text-secondary)]">
+          <span className="font-medium text-[var(--text-primary)]">Latest transaction:</span>{' '}
           {latestTxHash ? (
             <a
               href={`https://explorer.citrea.xyz/tx/${latestTxHash}`}
               target="_blank"
               rel="noreferrer"
-              className="font-medium text-[#D4797F] underline-offset-4 hover:underline"
+              className="font-medium text-[#ff8ab9] underline-offset-4 hover:underline"
             >
               {latestTxHash}
             </a>
@@ -266,20 +260,20 @@ function VaultExpandedSection({ userRewards }: { userRewards: UserRewardsState }
           )}
         </div>
         {latestError ? (
-          <div className="mt-3 rounded-2xl border border-[#F3C4CF] bg-[#FFF5F8] p-4 text-sm text-[#B85C7D]">
+          <div className="mt-3 rounded-xl border border-[#ff4f96]/20 bg-[#2b1820] p-4 text-sm text-[#ff9abb]">
             {latestError.message}
           </div>
         ) : null}
       </div>
-    </>
+    </div>
   );
 }
 
 function ConnectPromptCard() {
   return (
-    <div className="rounded-2xl border border-dashed border-[#F0E8E8] bg-[#FFF8F6] p-6 lg:col-span-2">
-      <div className="text-lg font-semibold text-[#333333]">Connect to Deposit</div>
-      <p className="mt-2 max-w-2xl text-sm leading-6 text-[#666666]">
+    <div className="rounded-xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-surface-2)] p-6 lg:col-span-2">
+      <div className="text-lg font-semibold text-[var(--text-primary)]">Connect to Deposit</div>
+      <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
         Connect your wallet to deposit, withdraw, stake, unstake, and claim HLX rewards.
       </p>
       <div className="mt-4 max-w-[220px]">
@@ -316,86 +310,96 @@ export function VaultRow() {
       : 'Active';
 
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="p-0">
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => setExpanded((current) => !current)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              setExpanded((current) => !current);
-            }
-          }}
-          className="flex cursor-pointer flex-col gap-4 border-b border-[#F0E8E8] px-5 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between"
-        >
+    <>
+      <tr
+        role="button"
+        tabIndex={0}
+        onClick={() => setExpanded((current) => !current)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setExpanded((current) => !current);
+          }
+        }}
+        className="cursor-pointer border-t border-[var(--divider)] transition-colors hover:bg-[var(--bg-surface-2)]"
+      >
+        <td className="px-6 py-5 align-top">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FFF1F5] text-[#D4797F]">
-              <span
-                className={[
-                  'text-lg transition-transform duration-200',
-                  expanded ? 'rotate-180' : 'rotate-0',
-                ].join(' ')}
-              >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ff4f96]/15 text-[#ff8ab9]">
+              <span className={[
+                'text-lg transition-transform duration-200',
+                expanded ? 'rotate-180' : 'rotate-0',
+              ].join(' ')}>
                 ▾
               </span>
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-lg font-semibold text-[#333333]">Helix USDC.e Vault</h3>
-                <Badge variant={vaultState.paused || vaultState.withdrawOnly ? 'secondary' : 'default'}>
-                  {statusLabel}
-                </Badge>
+                <span className="rounded-full bg-[#ff4f96]/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ff8ab9]">
+                  Auto
+                </span>
+                <span className="text-xs text-[var(--text-muted)]">Single Asset</span>
+                <Badge variant={vaultState.paused || vaultState.withdrawOnly ? 'secondary' : 'default'}>{statusLabel}</Badge>
               </div>
-              <p className="mt-1 text-sm text-[#666666]">Single-asset smart vault on Citrea</p>
+              <div className="mt-1 truncate text-base font-semibold text-[var(--text-primary)]">Helix USDC.e Vault</div>
+              <p className="mt-0.5 text-sm text-[var(--text-secondary)]">Single-asset smart vault on Citrea</p>
             </div>
           </div>
+        </td>
 
-          <div className="grid flex-1 grid-cols-1 gap-3 text-left sm:grid-cols-2 xl:grid-cols-4 lg:max-w-3xl lg:gap-4">
-            <Metric label="APY" value="—" />
-            <Metric
-              label="TVL"
-              value={`${formatUsdce(vaultState.totalAssets)} USDC.e`}
-              isLoading={vaultState.isLoading}
-            />
-            <Metric
-              label="Earned HLX"
-              value={`${formatHlx(userRewards.earnedHlx)} HLX`}
-              isLoading={!mounted || userRewards.isLoading}
-            />
-            <div className="flex items-center justify-end gap-2">
-              {connected ? (
-                <GradientButton
-                  className="w-full sm:w-auto"
-                  disabled={harvestDisabled}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    void compound.compound();
-                  }}
-                >
-                  {isHarvesting
-                    ? 'Harvesting...'
-                    : strategyState.cooldownRemaining > 0n
-                      ? 'Cooldown'
-                      : 'Harvest'}
-                </GradientButton>
-              ) : (
-                <ConnectWalletButton className="w-full" />
-              )}
+        <td className="px-4 py-5 align-top">
+          <MetricCell label="APY" value="—" helper="Pending live strategy performance" />
+        </td>
+
+        <td className="px-4 py-5 align-top">
+          <MetricCell
+            label="Earn"
+            value={`${formatHlx(userRewards.earnedHlx)} HLX`}
+            helper="Claimable rewards"
+            isLoading={!mounted || userRewards.isLoading}
+          />
+        </td>
+
+        <td className="px-4 py-5 align-top">
+          <MetricCell
+            label="TVL"
+            value={`${formatUsdce(vaultState.totalAssets)} USDC.e`}
+            helper="Vault assets"
+            isLoading={vaultState.isLoading}
+          />
+        </td>
+
+        <td className="px-6 py-5 align-top text-right">
+          <div className="flex items-center justify-end gap-2">
+            {connected ? (
+              <GradientButton
+                className="h-10 px-4"
+                disabled={harvestDisabled}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  void compound.compound();
+                }}
+              >
+                {isHarvesting ? 'Harvesting...' : strategyState.cooldownRemaining > 0n ? 'Cooldown' : 'Harvest'}
+              </GradientButton>
+            ) : (
+              <div onClick={(event) => event.stopPropagation()}>
+                <ConnectWalletButton className="w-full sm:w-auto sm:min-w-[170px]" />
+              </div>
+            )}
+          </div>
+        </td>
+      </tr>
+
+      {expanded ? (
+        <tr>
+          <td colSpan={5} className="border-t border-[var(--divider)] bg-[var(--bg-surface-2)] px-5 py-5 sm:px-6">
+            <div onClick={(event) => event.stopPropagation()}>
+              {connected ? <VaultExpandedSection userRewards={userRewards} /> : <ConnectPromptCard />}
             </div>
-          </div>
-        </div>
-
-        {expanded ? (
-          <div
-            className="grid gap-4 px-5 py-5 sm:px-6 lg:grid-cols-2"
-            onClick={(event) => event.stopPropagation()}
-          >
-            {connected ? <VaultExpandedSection userRewards={userRewards} /> : <ConnectPromptCard />}
-          </div>
-        ) : null}
-      </CardContent>
-    </Card>
+          </td>
+        </tr>
+      ) : null}
+    </>
   );
 }

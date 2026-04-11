@@ -9,9 +9,9 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClasses: Record<ButtonVariant, string> = {
   default:
-    'border border-[#F0E8E8] bg-white text-[#333333] hover:bg-[#FFF8F6]',
-  outline: 'border border-[#E8A0B8]/35 bg-[#FFF8F6] text-[#D4797F] hover:bg-[#FFF1F5]',
-  ghost: 'bg-transparent text-[#666666] hover:bg-[#FFF4F7]',
+    'border border-[var(--border-subtle)] bg-[var(--bg-surface-2)] text-[var(--text-primary)] hover:bg-[#2a3040]',
+  outline: 'border border-[var(--border-subtle)] bg-transparent text-[#ff8ab9] hover:bg-[#222936]',
+  ghost: 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-surface-2)]',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -23,8 +23,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       type={type}
       className={[
-        'inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-medium transition-colors duration-200',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4797F] focus-visible:ring-offset-2 focus-visible:ring-offset-white',
+        'inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm font-medium transition-colors duration-200',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4f96] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0f16]',
         'disabled:pointer-events-none disabled:opacity-50',
         variantClasses[variant],
         className,

@@ -12,10 +12,10 @@ export const GradientButton = forwardRef<HTMLButtonElement, GradientButtonProps>
         ref={ref}
         type={type}
         className={[
-          'inline-flex h-11 items-center justify-center rounded-[12px] px-5 text-sm font-semibold text-white transition duration-200',
-          'bg-[linear-gradient(135deg,#E8A0B8,#D4797F)] shadow-[0_12px_24px_rgba(212,121,127,0.22)] hover:brightness-105',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4797F] focus-visible:ring-offset-2 focus-visible:ring-offset-white',
-          'disabled:cursor-not-allowed disabled:bg-[#E8A0B8]/55 disabled:shadow-none disabled:brightness-100',
+          'inline-flex h-11 items-center justify-center rounded-lg px-5 text-sm font-semibold text-white transition duration-200',
+          'bg-[#ff4f96] shadow-none hover:bg-[#ff5ca0]',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4f96] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0f16]',
+          'disabled:cursor-not-allowed disabled:bg-[#ff4f96]/40 disabled:shadow-none disabled:hover:bg-[#ff4f96]/40',
           className,
         ].join(' ')}
         {...props}

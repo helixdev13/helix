@@ -55,7 +55,7 @@ export function TabsList({ className = '', ...props }: TabsListProps) {
   return (
     <div
       role="tablist"
-      className={['inline-flex items-center gap-8 border-b border-[#F0E8E8] bg-transparent p-0', className].join(' ')}
+      className={['inline-flex items-center gap-8 border-b border-[var(--border-subtle)] bg-transparent p-0', className].join(' ')}
       {...props}
     />
   );
@@ -83,9 +83,7 @@ export function TabsTrigger({ value, className = '', children, ...props }: TabsT
       onClick={() => context.setValue(value)}
       className={[
         'border-b-2 border-transparent px-1 py-3 text-sm font-medium transition-colors',
-        active
-          ? 'border-[#D4797F] text-[#D4797F]'
-          : 'text-[#999999] hover:text-[#333333]',
+        active ? 'border-[#ff4f96] text-[#ff4f96]' : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
         className,
       ].join(' ')}
       {...props}

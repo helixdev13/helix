@@ -7,9 +7,9 @@ type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
 };
 
 const variantClasses: Record<BadgeVariant, string> = {
-  default: 'bg-[#E8A0B8]/15 text-[#B85C7D] border border-[#E8A0B8]/30',
-  secondary: 'bg-[#FFF8F6] text-[#666666] border border-[#F0E8E8]',
-  outline: 'bg-white text-[#666666] border border-[#F0E8E8]',
+  default: 'bg-[#ff4f96]/15 text-[#ff8ab9] border border-[#ff4f96]/25',
+  secondary: 'bg-[var(--bg-surface-2)] text-[var(--text-secondary)] border border-[var(--border-subtle)]',
+  outline: 'bg-transparent text-[var(--text-secondary)] border border-[var(--border-subtle)]',
 };
 
 export function Badge({ className = '', variant = 'default', ...props }: BadgeProps) {
