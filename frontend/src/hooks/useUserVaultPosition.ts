@@ -58,9 +58,11 @@ export function useUserVaultPosition(
     },
   });
 
-  const [shares = 0n, usdceBalance = 0n, usdceAllowance = 0n] = data ?? [];
+  const [shares = 0n, usdceBalance = 0n, usdceAllowance = 0n] = (data ?? []) as Array<
+    bigint | undefined
+  >;
 
-  const { data: sharesInUsdce = 0n } = useReadContract({
+  const sharesInUsdceResult = useReadContract({
     address: vaultAddress,
     abi: HELIX_VAULT_ABI,
     functionName: 'convertToAssets',
@@ -71,6 +73,7 @@ export function useUserVaultPosition(
       refetchInterval: 30_000,
     },
   });
+  const sharesInUsdce = (sharesInUsdceResult.data ?? 0n) as bigint;
 
   return {
     shares,

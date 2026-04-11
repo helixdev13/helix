@@ -91,7 +91,7 @@ export function useUserRewards(
     stakeAllowance = 0n,
     rewardRate = 0n,
     periodFinish = 0n,
-  ] = data ?? [];
+  ] = (data ?? []) as Array<bigint | undefined>;
 
   return {
     stakedShares,
