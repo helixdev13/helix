@@ -291,10 +291,27 @@ export function VaultRow() {
   const { address } = useAccount();
   const [mounted, setMounted] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [expandedContentVisible, setExpandedContentVisible] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+
+    if (expanded) {
+      setExpandedContentVisible(true);
+    } else {
+      timeout = setTimeout(() => setExpandedContentVisible(false), 260);
+    }
+
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [expanded]);
 
   const connected = mounted && Boolean(address);
 
@@ -319,12 +336,17 @@ export function VaultRow() {
             setExpanded((current) => !current);
           }
         }}
-        className="group cursor-pointer border-t border-[var(--divider)] transition-colors hover:bg-[rgba(255,255,255,0.02)]"
+        className="group cursor-pointer border-t border-[var(--divider)] outline-none transition-colors hover:bg-[rgba(255,255,255,0.02)] focus:outline-none focus-visible:outline-none"
       >
         <td className="px-6 py-5 align-top">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#ff4f96]/15 text-[#ff8ab9]">
-              <span className={[ 'text-lg transition-transform duration-200', expanded ? 'rotate-180' : 'rotate-0' ].join(' ')}>
+              <span
+                className={[
+                  'text-lg transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                  expanded ? 'rotate-180' : 'rotate-0',
+                ].join(' ')}
+              >
                 ▾
               </span>
             </div>
@@ -390,11 +412,21 @@ export function VaultRow() {
         </td>
       </tr>
 
-      {expanded ? (
+      {expandedContentVisible ? (
         <tr>
-          <td colSpan={6} className="border-t border-[var(--divider)] bg-[var(--bg-surface-2)] px-5 py-5 sm:px-6">
-            <div onClick={(event) => event.stopPropagation()}>
-              {connected ? <VaultExpandedSection userRewards={userRewards} /> : <ConnectPromptCard />}
+          <td colSpan={6} className="border-t border-[var(--divider)] bg-[var(--bg-surface-2)] p-0">
+            <div
+              className={[
+                'grid overflow-hidden transition-[grid-template-rows,opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                expanded ? 'grid-rows-[1fr] opacity-100 translate-y-0' : 'grid-rows-[0fr] opacity-0 -translate-y-1',
+              ].join(' ')}
+              aria-hidden={!expanded}
+            >
+              <div className="overflow-hidden px-5 py-5 sm:px-6">
+                <div onClick={(event) => event.stopPropagation()}>
+                  {connected ? <VaultExpandedSection userRewards={userRewards} /> : <ConnectPromptCard />}
+                </div>
+              </div>
             </div>
           </td>
         </tr>
