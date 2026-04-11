@@ -6,7 +6,7 @@ export function Card({ className = '', ...props }: DivProps) {
   return (
     <div
       className={[
-        'rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl',
+        'rounded-[16px] border border-[#F0E8E8] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]',
         className,
       ].join(' ')}
       {...props}
@@ -15,17 +15,17 @@ export function Card({ className = '', ...props }: DivProps) {
 }
 
 export function CardHeader({ className = '', ...props }: DivProps) {
-  return <div className={['flex flex-col space-y-1.5 p-6', className].join(' ')} {...props} />;
+  return <div className={['flex flex-col space-y-1.5 p-5 sm:p-6', className].join(' ')} {...props} />;
 }
 
 export function CardTitle({ className = '', ...props }: DivProps) {
-  return <h3 className={['text-lg font-semibold tracking-tight text-white', className].join(' ')} {...props} />;
+  return <h3 className={['text-lg font-semibold tracking-tight text-[#333333]', className].join(' ')} {...props} />;
 }
 
 export function CardDescription({ className = '', ...props }: DivProps) {
-  return <p className={['text-sm text-slate-400', className].join(' ')} {...props} />;
+  return <p className={['text-sm text-[#666666]', className].join(' ')} {...props} />;
 }
 
 export function CardContent({ className = '', ...props }: DivProps) {
-  return <div className={['p-6 pt-0', className].join(' ')} {...props} />;
+  return <div className={['p-5 pt-0 sm:p-6 sm:pt-0', className].join(' ')} {...props} />;
 }

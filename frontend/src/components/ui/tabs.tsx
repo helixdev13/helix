@@ -55,7 +55,7 @@ export function TabsList({ className = '', ...props }: TabsListProps) {
   return (
     <div
       role="tablist"
-      className={['inline-flex rounded-2xl border border-white/10 bg-white/5 p-1', className].join(' ')}
+      className={['inline-flex items-center gap-8 border-b border-[#F0E8E8] bg-transparent p-0', className].join(' ')}
       {...props}
     />
   );
@@ -82,8 +82,10 @@ export function TabsTrigger({ value, className = '', children, ...props }: TabsT
       tabIndex={active ? 0 : -1}
       onClick={() => context.setValue(value)}
       className={[
-        'rounded-xl px-3 py-2 text-sm font-medium transition-colors',
-        active ? 'bg-emerald-400 text-slate-950' : 'text-slate-300 hover:bg-white/10 hover:text-white',
+        'border-b-2 border-transparent px-1 py-3 text-sm font-medium transition-colors',
+        active
+          ? 'border-[#D4797F] text-[#D4797F]'
+          : 'text-[#999999] hover:text-[#333333]',
         className,
       ].join(' ')}
       {...props}
