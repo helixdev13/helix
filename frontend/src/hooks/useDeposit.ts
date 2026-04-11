@@ -4,7 +4,6 @@ import { useAccount, usePublicClient, useWriteContract } from 'wagmi';
 
 import { CONTRACTS, CITREA_CHAIN_ID, TOKENS } from '@/config/contracts';
 import { HELIX_VAULT_ABI, HLX_TOKEN_ABI } from '@/lib/contracts';
-import { useUserVaultPosition } from '@/hooks/useUserVaultPosition';
 import { useQueryClient } from '@tanstack/react-query';
 
 type DepositPhase = 'idle' | 'approving' | 'depositing';
@@ -17,12 +16,14 @@ export type DepositResult = {
   error: Error | null;
 };
 
-export function useDeposit(vaultAddress: Address = CONTRACTS.helixVault): DepositResult {
+export function useDeposit(
+  vaultAddress: Address = CONTRACTS.helixVault,
+  usdceAllowance: bigint = 0n,
+): DepositResult {
   const { address } = useAccount();
   const publicClient = usePublicClient({ chainId: CITREA_CHAIN_ID });
   const queryClient = useQueryClient();
   const { writeContractAsync } = useWriteContract();
-  const { usdceAllowance } = useUserVaultPosition(vaultAddress, address);
   const [phase, setPhase] = useState<DepositPhase>('idle');
   const [txHash, setTxHash] = useState<Hex | undefined>();
   const [error, setError] = useState<Error | null>(null);

@@ -4,7 +4,6 @@ import { useAccount, usePublicClient, useWriteContract } from 'wagmi';
 
 import { CONTRACTS, CITREA_CHAIN_ID } from '@/config/contracts';
 import { HELIX_VAULT_ABI, REWARD_DISTRIBUTOR_ABI } from '@/lib/contracts';
-import { useUserRewards } from '@/hooks/useUserRewards';
 import { useQueryClient } from '@tanstack/react-query';
 
 type StakePhase = 'idle' | 'approving' | 'staking';
@@ -20,21 +19,19 @@ export type StakeResult = {
 export function useStake(
   vaultAddress: Address = CONTRACTS.helixVault,
   distributorAddress: Address = CONTRACTS.rewardDistributor,
-  userAddress?: Address,
+  stakeAllowance: bigint = 0n,
 ): StakeResult {
-  const { address: connectedAddress } = useAccount();
-  const account = userAddress ?? connectedAddress;
+  const { address } = useAccount();
   const publicClient = usePublicClient({ chainId: CITREA_CHAIN_ID });
   const queryClient = useQueryClient();
   const { writeContractAsync } = useWriteContract();
-  const { stakeAllowance } = useUserRewards(vaultAddress, distributorAddress, account);
   const [phase, setPhase] = useState<StakePhase>('idle');
   const [txHash, setTxHash] = useState<Hex | undefined>();
   const [error, setError] = useState<Error | null>(null);
 
   const stake = useCallback(
     async (amount: bigint) => {
-      if (!account) {
+      if (!address) {
         const nextError = new Error('Connect your wallet before staking.');
         setError(nextError);
         throw nextError;
@@ -90,7 +87,7 @@ export function useStake(
         setPhase('idle');
       }
     },
-    [account, distributorAddress, publicClient, queryClient, stakeAllowance, vaultAddress, writeContractAsync],
+    [address, distributorAddress, publicClient, queryClient, stakeAllowance, vaultAddress, writeContractAsync],
   );
 
   return {
