@@ -1,15 +1,20 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CONTRACTS, TOKENS } from '@/config/contracts';
-import { CompoundPanel } from '@/components/CompoundPanel';
 import { VaultRow } from '@/components/VaultRow';
 import { formatBps, formatUsdce, truncateAddress } from '@/lib/format';
 import { useVaultState } from '@/hooks';
+
+const CompoundPanel = dynamic(
+  () => import('@/components/CompoundPanel').then((mod) => mod.CompoundPanel),
+  { ssr: false },
+);
 
 type DashboardTab = 'vaults' | 'compound';
 
@@ -95,21 +100,21 @@ export default function Home() {
                 <Metric
                   label="TVL"
                   value={`${formatUsdce(vaultState.totalAssets)} USDC.e`}
-                helper="Total assets currently in the vault"
-                isLoading={vaultState.isLoading}
-              />
-              <Metric
-                label="Deposit cap remaining"
-                value={`${formatUsdce(capRemaining)} USDC.e`}
-                helper="Room left before the cap is reached"
-                isLoading={vaultState.isLoading}
-              />
-              <Metric
-                label="Strategy allocation"
-                value={strategyAllocation}
-                helper={`${formatUsdce(vaultState.totalStrategyAssets)} USDC.e deployed to strategy`}
-                isLoading={vaultState.isLoading}
-              />
+                  helper="Total assets currently in the vault"
+                  isLoading={vaultState.isLoading}
+                />
+                <Metric
+                  label="Deposit cap remaining"
+                  value={`${formatUsdce(capRemaining)} USDC.e`}
+                  helper="Room left before the cap is reached"
+                  isLoading={vaultState.isLoading}
+                />
+                <Metric
+                  label="Strategy allocation"
+                  value={strategyAllocation}
+                  helper={`${formatUsdce(vaultState.totalStrategyAssets)} USDC.e deployed to strategy`}
+                  isLoading={vaultState.isLoading}
+                />
               </div>
             </section>
 

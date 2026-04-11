@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-
+import { ConnectWalletButton } from '@/components/ConnectWalletButton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { GradientButton } from '@/components/GradientButton';
 
 type DashboardTab = 'vaults' | 'compound';
 
@@ -56,45 +54,7 @@ export function Navbar() {
         </Tabs>
 
         <div className="w-full self-stretch lg:w-auto lg:self-end">
-          <ConnectButton.Custom>
-            {({ account, chain, mounted, openAccountModal, openChainModal, openConnectModal }) => {
-              if (!mounted) {
-                return (
-                  <GradientButton className="w-full min-w-0 lg:min-w-[170px]" disabled>
-                    Connect Wallet
-                  </GradientButton>
-                );
-              }
-
-              const connected = Boolean(account && chain);
-              const label = !connected
-                ? 'Connect Wallet'
-                : chain?.unsupported
-                  ? 'Switch to Citrea'
-                  : 'Open Wallet';
-
-              return (
-                <GradientButton
-                  className="w-full min-w-0 lg:min-w-[170px]"
-                  onClick={() => {
-                    if (!connected) {
-                      openConnectModal();
-                      return;
-                    }
-
-                    if (chain?.unsupported) {
-                      openChainModal();
-                      return;
-                    }
-
-                    openAccountModal();
-                  }}
-                >
-                  {label}
-                </GradientButton>
-              );
-            }}
-          </ConnectButton.Custom>
+          <ConnectWalletButton className="w-full min-w-0 lg:min-w-[170px]" />
         </div>
       </div>
     </header>

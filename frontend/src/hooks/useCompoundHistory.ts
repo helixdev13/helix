@@ -41,7 +41,7 @@ export function useCompoundHistory(strategyAddress: Address = CONTRACTS.strategy
       const logs = await publicClient.getLogs({
         address: strategyAddress,
         event: compoundExecutedEvent,
-        fromBlock: 0n,
+        fromBlock: 500000n,
         toBlock: 'latest',
       });
 

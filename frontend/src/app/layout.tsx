@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import '@rainbow-me/rainbowkit/styles.css';
 
 import { Navbar } from '../components/Navbar';
 import { Web3Provider } from '../providers/Web3Provider';

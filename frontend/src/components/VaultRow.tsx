@@ -3,10 +3,10 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { parseUnits } from 'viem';
 
+import { ConnectWalletButton } from '@/components/ConnectWalletButton';
 import { GradientButton } from '@/components/GradientButton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -74,34 +74,6 @@ function ActionCard({
       </div>
       {children}
     </div>
-  );
-}
-
-function ConnectPrompt({ label }: { label: string }) {
-  return (
-    <ConnectButton.Custom>
-      {({ mounted, openConnectModal }) => {
-        if (!mounted) {
-          return (
-            <GradientButton className="w-full" disabled>
-              {label}
-            </GradientButton>
-          );
-        }
-
-        return (
-          <GradientButton
-            className="w-full"
-            onClick={(event) => {
-              event.stopPropagation();
-              openConnectModal();
-            }}
-          >
-            {label}
-          </GradientButton>
-        );
-      }}
-    </ConnectButton.Custom>
   );
 }
 
@@ -207,26 +179,26 @@ export function VaultRow() {
               value={`${formatHlx(userRewards.earnedHlx)} HLX`}
               isLoading={!connected || userRewards.isLoading}
             />
-            <div className="flex items-center justify-end gap-2">
-              {connected ? (
-                <GradientButton
-                  className="w-full sm:w-auto"
-                  disabled={harvestDisabled}
+              <div className="flex items-center justify-end gap-2">
+                {connected ? (
+                  <GradientButton
+                    className="w-full sm:w-auto"
+                    disabled={harvestDisabled}
                   onClick={(event) => {
                     event.stopPropagation();
                     void compound.compound();
                   }}
-                >
-                  {isHarvesting
-                    ? 'Harvesting...'
-                    : strategyState.cooldownRemaining > 0n
-                      ? 'Cooldown'
-                      : 'Harvest'}
-                </GradientButton>
-              ) : (
-                <ConnectPrompt label="Connect to Harvest" />
-              )}
-            </div>
+                  >
+                    {isHarvesting
+                      ? 'Harvesting...'
+                      : strategyState.cooldownRemaining > 0n
+                        ? 'Cooldown'
+                        : 'Harvest'}
+                  </GradientButton>
+                ) : (
+                  <ConnectWalletButton className="w-full" />
+                )}
+              </div>
           </div>
         </div>
 
@@ -242,7 +214,7 @@ export function VaultRow() {
                   Connect your wallet to deposit, withdraw, stake, unstake, and claim HLX rewards.
                 </p>
                 <div className="mt-4 max-w-[220px]">
-                  <ConnectPrompt label="Connect to Deposit" />
+                  <ConnectWalletButton className="w-full" />
                 </div>
               </div>
             ) : (

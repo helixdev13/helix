@@ -2,8 +2,7 @@
 
 import { useAccount } from 'wagmi';
 
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-
+import { ConnectWalletButton } from '@/components/ConnectWalletButton';
 import { GradientButton } from '@/components/GradientButton';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,34 +30,6 @@ function Metric({
       <div className="mt-1 text-base font-semibold text-[#333333]">{value}</div>
       <div className="mt-1 text-xs text-[#666666]">{helper}</div>
     </div>
-  );
-}
-
-function ConnectPrompt({ label }: { label: string }) {
-  return (
-    <ConnectButton.Custom>
-      {({ mounted, openConnectModal }) => {
-        if (!mounted) {
-          return (
-            <GradientButton className="min-w-[220px]" disabled>
-              {label}
-            </GradientButton>
-          );
-        }
-
-        return (
-          <GradientButton
-            className="min-w-[220px]"
-            onClick={(event) => {
-              event.stopPropagation();
-              openConnectModal();
-            }}
-          >
-            {label}
-          </GradientButton>
-        );
-      }}
-    </ConnectButton.Custom>
   );
 }
 
@@ -158,7 +129,7 @@ export function CompoundPanel() {
                     : 'Compound Now'}
               </GradientButton>
             ) : (
-              <ConnectPrompt label="Connect Wallet to Compound" />
+              <ConnectWalletButton className="min-w-[220px]" />
             )}
 
             {latestTxHash ? (
